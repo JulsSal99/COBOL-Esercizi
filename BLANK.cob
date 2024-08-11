@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.       BLANKFILE.
+       AUTHOR.       Giulio.
+       DATE-WRITTEN.00/00/0000
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       DATA DIVISION.
+       FILE SECTION.
+       
+       WORKING-STORAGE SECTION.
+       
+       PROCEDURE DIVISION.
+       
+           STOP RUN.
