@@ -23,7 +23,6 @@
            PERFORM 10 TIMES
                   DISPLAY "Valore: " Num
                   COMPUTE Num = Num + 1
-                  *> AHAHA, COMMENTO!
            END-PERFORM.
            DISPLAY "Pi greco = " PIValue " Numero negativo = " 
            SignedInt " Paga = " Paga.

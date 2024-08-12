@@ -6,6 +6,11 @@
        *> dove si specificano i dettagli dell'ambiente in cui il
        *> programma viene eseguito. Include sezioni come 
        *> CONFIGURATION SECTION e INPUT-OUTPUT SECTION.
+       INPUT-OUTPUT SECTION.
+       *> divisa in FILE-CONTROL e I-O CONTROL (facoltativo)
+       FILE-CONTROL.
+       *> si dichiarano i file utilizzati nel programma e si specificano 
+       *> le modalità di accesso
        CONFIGURATION SECTION.
        *> dichiarare configurazioni specifiche del sistema, come le 
        *> impostazioni per l'host e le periferiche

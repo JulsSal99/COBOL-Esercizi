@@ -6,11 +6,17 @@
        WORKING-STORAGE SECTION.
        *> PIC permette di formatare
        01 Num1       PIC 9(3). *> 9: posizione numerica sempre mostrata
-       01 Num2       PIC Z99. *> Z: posizione numerica che, se è zero,
-                               *> sarà uno spazio vuoto.
-       01 Operatore  PIC X.
-       01 Risultato  PIC 9(6).
-       01 Resto    PIC 9(3).
+       01 Num2       PIC 9(3).
+       01 Operatore  PIC X.    *> X: carattere alfanumerico
+       01 Risultato  PIC ZZ9.  *> Z: se il numero contiene uno zero iniziale, 
+                               *>questo verrà visualizzato come spazio.
+       01 Resto    PIC Z(3).
+           *> LEGENDA:
+           *> 9: Numerico
+           *> X: AlfaNumerico
+           *> Z: diventa uno spazio se 0
+           *> V: virgola
+           *> S: signed
        PROCEDURE DIVISION.
 
            DISPLAY "CALCOLATRICE: ".
