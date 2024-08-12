@@ -50,9 +50,8 @@ Crea una costante.
 Indica il codice eseguibile del programma
 - STOP RUN.                                             - Termina il Main
 - DISPLAY "" Num1.                                      - Mostra " "Num1
-  - 
-- ACCEPT Num1.                                          - prende Num1 in input
   - DISPLAY "Valore iniziale: " Num NO ADVANCING.       - NO ADVANCING non manda a capo
+- ACCEPT Num1.                                          - prende Num1 in input
 - COMPUTE Risultato = Num1 ** Num2.                     - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili
   - COMPUTE Num ROUNDED = 3.0 + 2.005.                  - ROUNDED arrotonda
 - if Operatore="/" THEN                                 - esegue un ciclo if THEN
