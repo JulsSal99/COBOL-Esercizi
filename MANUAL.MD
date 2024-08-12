@@ -48,24 +48,41 @@ Crea una costante.
 
 # PROCEDURE DIVISION.
 Indica il codice eseguibile del programma
-- STOP RUN.                                             - Termina il Main
-- DISPLAY "" Num1.                                      - Mostra " "Num1
-  - DISPLAY "Valore iniziale: " Num NO ADVANCING.       - NO ADVANCING non manda a capo
-- ACCEPT Num1.                                          - prende Num1 in input
-- COMPUTE Risultato = Num1 ** Num2.                     - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili
-  - COMPUTE Num ROUNDED = 3.0 + 2.005.                  - ROUNDED arrotonda
-- if Operatore="/" THEN                                 - esegue un ciclo if THEN
-- ADD Num1, Num2 GIVING Risultato.                      - esegue la somma
+- STOP RUN.                                             - Termina il Main.
+- DISPLAY "" Num1.                                      - Mostra " "Num1.
+  - DISPLAY "Valore iniziale: " Num NO ADVANCING.         - NO ADVANCING non manda a capo.
+- ACCEPT Num1.                                          - prende Num1 in input.
+- COMPUTE Risultato = Num1 ** Num2.                     - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili.
+  - COMPUTE Num ROUNDED = 3.0 + 2.005.                    - ROUNDED arrotonda.
+- if Operatore="/" THEN                                 - esegue un ciclo if THEN.
+  - IF Val1 IS Val2 THEN ... END-IF.
+  - IF Num1 LESS THAN Num2 THEN ... END-IF.
+  - IF Num1 > Num2 AND Num3 < Num4 THEN ... END-IF.
+  - IF Num1 > Num2 OR Num3 < Num4 THEN ... END-IF.
+- PERFORM n TIMES ... END-PERFORM.                      - pari a un ciclo for. Ripete per n volte.
+- MOVE Num1 TO Num2.                                    - trasferisce il valore di una variabile a un'altra variabile.
+  - MOVE ALL n                                            - riempie di n.
+  - MOVE ZERO                                             - riempie di zero.
+  - MOVE SPACE                                            - riempie di spazi.
+  - MOVE HIGH-VALUE                                       - valore massimo possibile per il tipo di dati della variabile.
+  - MOVE LOW-VALUE                                        - valore minimo possibile per il tipo di dati della variabile.
+  - MOVE QUOTE
+- SET indice TO valore                                  - assegna un valore specifico a una variabile basata su una condizione.
+  - SET indice UP BY 1                                    - incrementa l'indice.
+  - SET indice DOWN BY 1
+  - SET condition-name TO TRUE                            - attivare condition names (booleani).
+  - SET condition-name TO FALSE
+- ADD Num1, Num2 GIVING Risultato.                      - esegue la somma.
 - SUBTRACT Num1 FROM Num2 GIVING Risultato.
 - MULTIPLY Num1 BY Num2 GIVING Risultato.
 - DIVIDE Num1 BY Num2 GIVING Risultato REMAINDER Resto.
-- ACCEPT CURRENTDATE FROM DATE YYYYMMDD.                - permette di ottenere la data attuale
+- ACCEPT CURRENTDATE FROM DATE YYYYMMDD.                - permette di ottenere la data attuale.
   - Il formato è il seguente:
          01 CurrentDate.
            02 CurrentYear       PIC 9(4).
            02 CurrentMonth       PIC 99.
            02 CurrentDay       PIC 99.
-- ACCEPT CURRENTTIME FROM TIME.                         - permette di ottenere l'ora attuale
+- ACCEPT CURRENTTIME FROM TIME.                         - permette di ottenere l'ora attuale.
   - Il formato è il seguente:
        01 CurrentTime.
            02 CurrentHour       PIC 99.
