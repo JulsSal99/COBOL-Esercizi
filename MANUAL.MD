@@ -17,6 +17,16 @@ dichiara configurazioni specifiche del sistema, come le impostazioni per l'host 
 
 # SPECIAL-NAMES.
 Viene utilizzata per dare nomi simbolici a specifici valori o per estendere il set di caratteri. eg. DECIMAL-POINT IS COMMA
+Esempio:
+```COBOL
+CLASS Cond1 IS "A" THRU "C", "D".
+```
+Controlla che Cond1 sia "A","B","C" o "D".
+Cond1 non è una variabile di per se, ma una condizione.
+Per esempio può essere usata così:
+```COBOL
+IF Score IS PassingScore THEN [...]
+```
 
 # DATA DIVISION.
 dove si definiscono tutte le variabili e le strutture dati
@@ -27,7 +37,10 @@ Dove si definiscono i file che il programma andra' a leggere o scrivere
 # WORKING-STORAGE SECTION.
 Dove si dichiarano le variabili di lavoro, che sono variabili temporanee utilizzate durante l'elaborazione del programma.
 I nomi devono essere univoci, MA possono essere uguali in gruppi differenti. 
-Esempio: 01 Num       PIC 9(2) VALUE 1.
+Esempio: 
+```COBOL
+01 Num       PIC 9(2) VALUE 1.
+```
 Legenda del primo numero:
 - 01-49: per descrivere variabili e strutture di dati.
 - 66: per definire "renames" (alias) per altre variabili.
@@ -43,30 +56,49 @@ Il numero viene formattato con PIC. Legenda dei simboli in PIC:
 Nota1: Scrivere "9(2)" è uguale a scrivere "99".
 Nota2. "Value" da un valore di default.
 
-Esempio: 01 PIValue CONSTANT AS 3.14.
+Esempio: 
+```COBOL
+01 PIValue CONSTANT AS 3.14.
+```
 Crea una costante.
+
+Esempio:
+```COBOL
+01 TestNumber    PIC X.
+           88 IsPrime    VALUE "1", "3", "5", "7".
+           88 IsOdd    VALUE "1", "3", "5", "7", "9".
+           88 LessThan5    VALUE "1" THRU "4".    *> 1, 2, 3 e 4
+```
+Ci sono tre condizioni precaricate che si possono controllare per esempio con 
+```COBOL
+WHEN IsPrime DISPLAY "Primo"
+```
 
 # PROCEDURE DIVISION.
 Indica il codice eseguibile del programma
-- STOP RUN.                                             - Termina il Main.
-- DISPLAY "" Num1.                                      - Mostra " "Num1.
-  - DISPLAY "Valore iniziale: " Num NO ADVANCING.         - NO ADVANCING non manda a capo.
-- ACCEPT Num1.                                          - prende Num1 in input.
-- COMPUTE Risultato = Num1 ** Num2.                     - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili.
-  - COMPUTE Num ROUNDED = 3.0 + 2.005.                    - ROUNDED arrotonda.
-- if Operatore="/" THEN                                 - esegue un ciclo if THEN.
-  - IF Val1 IS Val2 THEN ... END-IF.
-  - IF Num1 LESS THAN Num2 THEN ... END-IF.
-  - IF Num1 > Num2 AND Num3 < Num4 THEN ... END-IF.
-  - IF Num1 > Num2 OR Num3 < Num4 THEN ... END-IF.
-- PERFORM n TIMES ... END-PERFORM.                      - pari a un ciclo for. Ripete per n volte.
-- MOVE Num1 TO Num2.                                    - trasferisce il valore di una variabile a un'altra variabile.
-  - MOVE ALL n                                            - riempie di n.
-  - MOVE ZERO                                             - riempie di zero.
-  - MOVE SPACE                                            - riempie di spazi.
-  - MOVE HIGH-VALUE                                       - valore massimo possibile per il tipo di dati della variabile.
-  - MOVE LOW-VALUE                                        - valore minimo possibile per il tipo di dati della variabile.
-  - MOVE QUOTE
+- ```STOP RUN.``` - Termina il Main.
+- ```DISPLAY "" Num1.``` - Mostra " "Num1.
+  - ```DISPLAY "Valore iniziale: " Num NO ADVANCING.``` - NO ADVANCING non manda a capo.
+- ```ACCEPT Num1.``` - prende Num1 in input.
+## Condizioni e Cicli
+- ```if Operatore="/" THEN```  - esegue un ciclo if THEN.
+  - ```IF Val1 IS Val2 THEN [...] END-IF. ```
+  - ```IF Num1 LESS THAN Num2 THEN [...] END-IF. ```
+  - ```IF Num1 > Num2 AND Num3 < Num4 THEN [...] END-IF. ```
+  - ```IF Num1 > Num2 OR Num3 < Num4 THEN [...] END-IF. ```
+- ```EVALUATE TRUE [...] WHEN Cond1 DISPLAY "Cond1" [...] WHEN OTHER [...] END-EVALUATE.``` - corrispettivo delle strutture IF, ELSE IF e ELSE.
+- ```PERFORM n TIMES [...] END-PERFORM.``` - pari a un ciclo for. Ripete per n volte.
+  - ```PERFORM UNTIL NOT Condition [...] END-PERFORM.``` - Ripete finché non viene violata la condizione
+## azioni con le variabili
+- ```COMPUTE Risultato = Num1 ** Num2.``` - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili.
+  - ```COMPUTE Num ROUNDED = 3.0 + 2.005.``` - ROUNDED arrotonda.
+- ```MOVE Num1 TO Num2.``` - trasferisce il valore di una variabile a un'altra variabile.
+  - ```MOVE ALL n``` - riempie di n.
+  - ```MOVE ZERO``` - riempie di zero.
+  - ```MOVE SPACE``` - riempie di spazi.
+  - ```MOVE HIGH-VALUE``` - valore massimo possibile per il tipo di dati della variabile.
+  - ```MOVE LOW-VALUE``` - valore minimo possibile per il tipo di dati della variabile.
+  - ```MOVE QUOTE```
 - SET indice TO valore                                  - assegna un valore specifico a una variabile basata su una condizione.
   - SET indice UP BY 1                                    - incrementa l'indice.
   - SET indice DOWN BY 1
