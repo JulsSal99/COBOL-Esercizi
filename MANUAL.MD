@@ -1,7 +1,7 @@
 # IDENTIFICATION DIVISION.
 # PROGRAM-ID.       PrimoProgramma.
 # AUTHOR.       Giulio.
-# DATE-WRITTEN.22/07/2024
+# DATE-WRITTEN.12/08/2024
 
 # ENVIRONMENT DIVISION.
 Dove si specificano i dettagli dell'ambiente in cui il programma viene eseguito. Include sezioni come CONFIGURATION SECTION e INPUT-OUTPUT SECTION.
@@ -23,7 +23,7 @@ CLASS Cond1 IS "A" THRU "C", "D".
 ```
 Controlla che Cond1 sia "A","B","C" o "D".
 Cond1 non è una variabile di per se, ma una condizione.
-Per esempio può essere usata così:
+Per esempio può essere usata così nel PROCEDURE DIVISION:
 ```COBOL
 IF Score IS PassingScore THEN [...]
 ```
@@ -69,7 +69,7 @@ Esempio:
            88 IsOdd    VALUE "1", "3", "5", "7", "9".
            88 LessThan5    VALUE "1" THRU "4".    *> 1, 2, 3 e 4
 ```
-Ci sono tre condizioni precaricate che si possono controllare per esempio con 
+Ci sono tre condizioni precaricate che si possono controllare nel PROCEDURE DIVISION per esempio con:
 ```COBOL
 WHEN IsPrime DISPLAY "Primo"
 ```
@@ -99,23 +99,27 @@ Indica il codice eseguibile del programma
   - ```MOVE HIGH-VALUE``` - valore massimo possibile per il tipo di dati della variabile.
   - ```MOVE LOW-VALUE``` - valore minimo possibile per il tipo di dati della variabile.
   - ```MOVE QUOTE```
-- SET indice TO valore                                  - assegna un valore specifico a una variabile basata su una condizione.
-  - SET indice UP BY 1                                    - incrementa l'indice.
-  - SET indice DOWN BY 1
-  - SET condition-name TO TRUE                            - attivare condition names (booleani).
-  - SET condition-name TO FALSE
-- ADD Num1, Num2 GIVING Risultato.                      - esegue la somma.
-- SUBTRACT Num1 FROM Num2 GIVING Risultato.
-- MULTIPLY Num1 BY Num2 GIVING Risultato.
-- DIVIDE Num1 BY Num2 GIVING Risultato REMAINDER Resto.
-- ACCEPT CURRENTDATE FROM DATE YYYYMMDD.                - permette di ottenere la data attuale.
+- ```SET indice TO valore``` - assegna un valore specifico a una variabile basata su una condizione.
+  - ```SET indice UP BY 1``` - incrementa l'indice.
+  - ```SET indice DOWN BY 1```
+  - ```SET condition-name TO TRUE``` - attivare condition names (booleani).
+  - ```SET condition-name TO FALSE```
+- ```ADD Num1, Num2 GIVING Risultato.``` - esegue la somma.
+- ```SUBTRACT Num1 FROM Num2 GIVING Risultato.```
+- ```MULTIPLY Num1 BY Num2 GIVING Risultato.```
+- ```DIVIDE Num1 BY Num2 GIVING Risultato REMAINDER Resto.```
+- ```ACCEPT CURRENTDATE FROM DATE YYYYMMDD.``` - permette di ottenere la data attuale.
   - Il formato è il seguente:
+  ```COBOL
          01 CurrentDate.
            02 CurrentYear       PIC 9(4).
            02 CurrentMonth       PIC 99.
            02 CurrentDay       PIC 99.
-- ACCEPT CURRENTTIME FROM TIME.                         - permette di ottenere l'ora attuale.
+  ```
+- ```ACCEPT CURRENTTIME FROM TIME.``` - permette di ottenere l'ora attuale.
   - Il formato è il seguente:
+  ```COBOL
        01 CurrentTime.
            02 CurrentHour       PIC 99.
            02 CurrentMinute       PIC 99.
+  ```
