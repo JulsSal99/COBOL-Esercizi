@@ -1,3 +1,5 @@
+<img src="./logo.png" alt="logoCOBOL" width="250">
+
 # Esercizi COBOL
 
 Benvenuto nella repository dedicata ai miei esercizi su COBOL! 🚀
