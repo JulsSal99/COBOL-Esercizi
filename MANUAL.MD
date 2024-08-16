@@ -80,6 +80,7 @@ Indica il codice eseguibile del programma
 - ```DISPLAY "" Num1.``` - Mostra " "Num1.
   - ```DISPLAY "Valore iniziale: " Num NO ADVANCING.``` - NO ADVANCING non manda a capo.
 - ```ACCEPT Num1.``` - prende Num1 in input.
+- 
 ## Condizioni e Cicli
 - ```if Operatore="/" THEN```  - esegue un ciclo if THEN.
   - ```IF Val1 IS Val2 THEN [...] END-IF. ```
@@ -123,3 +124,45 @@ Indica il codice eseguibile del programma
            02 CurrentHour       PIC 99.
            02 CurrentMinute       PIC 99.
   ```
+## Sottofunzioni
+### Paragrafi
+I paragrafi (o sottofunzioni) vengono definiti e chiamati così:
+```COBOL
+  PERFORM Routine1. *> esegue la Routine1 e poi prosegue al punto successivo precedente
+  GO TO Routine1. *> esegue la Routine1 e poi prosegue all'interno di Routine1.
+
+  Routine1.
+    [...].
+```
+
+Alcuni esempi di chiamata PERFORM più avanzati:
+ -  ```PERFORM Routine1 2 TIMES.```
+ -  ```PERFORM Routine1 WITH TEST AFTER UNTIL Var > Num.```
+ -  ```PERFORM Routine1 VARYING Var FROM 1 BY 1 UNTIL Var = Num.```
+
+### Subroutines
+Le sottoroutine devono essere compilate con questo comando
+```BASH
+cobc -m RoutineFile.cob
+```
+
+Le subroutines vengono così definite in un file separato:
+*GETSUM.cob*:
+```COBOL
+PROGRAM-ID.       GETSUM.
+[...]
+LINKAGE SECTION.
+          01 LNum1    PIC 9 VALUE 0.
+          01 LNum2    PIC 9 VALUE 0.
+          01 LSum    PIC 99.
+PROCEDURE DIVISION USING LNum1, LNum2, LSum.
+          COMPUTE LSum = LNum1 + LNum2.
+```
+
+E richiamate poi nel PROCEDURE DIVISION usando il nome del PROGRAM-ID:
+*file.cob*:
+```COBOL
+PROCEDURE DIVISION.
+           CALL 'GETSUM' USING Num1, Num2, Sum1.
+           DISPLAY Num1 " + "  Num2 " = " Sum1.
+```
