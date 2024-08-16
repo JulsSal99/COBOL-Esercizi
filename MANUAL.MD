@@ -1,7 +1,7 @@
 # IDENTIFICATION DIVISION.
-# PROGRAM-ID.       PrimoProgramma.
+# PROGRAM-ID.       ManualeDiCobol.
 # AUTHOR.       Giulio.
-# DATE-WRITTEN.12/08/2024
+# DATE-WRITTEN. 12/08/2024
 
 # ENVIRONMENT DIVISION.
 Dove si specificano i dettagli dell'ambiente in cui il programma viene eseguito. Include sezioni come CONFIGURATION SECTION e INPUT-OUTPUT SECTION.
