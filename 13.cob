@@ -30,11 +30,11 @@
            *>         file non esiste, lo crea.
            *> INPUT:  solo lettura.
            OPEN EXTEND COSTUMERFILE.
-               MOVE 00001 TO IDNum.
-               MOVE 'Giulio' TO Name.
-               MOVE 'S' TO LastName.
-               WRITE COSTUMERDATA
-               END-WRITE.
+               *>MOVE 00001 TO IDNum.
+               *>MOVE 'Giulio' TO Name.
+               *>MOVE 'S' TO LastName.
+               *>WRITE COSTUMERDATA
+               *>END-WRITE.
 
                DISPLAY "Customer ID: " WITH NO ADVANCING
                ACCEPT IDNum.

@@ -92,6 +92,7 @@ Indica il codice eseguibile del programma
 - ```EVALUATE TRUE [...] WHEN Cond1 DISPLAY "Cond1" [...] WHEN OTHER [...] END-EVALUATE.``` - corrispettivo delle strutture IF, ELSE IF e ELSE.
 - ```PERFORM n TIMES [...] END-PERFORM.``` - pari a un ciclo for. Ripete per n volte.
   - ```PERFORM UNTIL NOT Condition [...] END-PERFORM.``` - Ripete finché non viene violata la condizione
+  - ```NOT AT END DISPLAY Val``` - nei cicli PERFORM si può mostrare un valore tranne che alla fine del ciclo.
 ## azioni con le variabili
 - ```COMPUTE Risultato = Num1 ** Num2.``` - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili.
   - ```COMPUTE Num ROUNDED = 3.0 + 2.005.``` - ROUNDED arrotonda in eccesso (eg. .71 divenda .8).
@@ -227,10 +228,12 @@ STRING SSTR1 DELIMITED BY SIZE SPACE
 ```
 
 ## Lettura dei files [(File 13.cob)](./13.cob)
-La lettura dei files da importare nel proprio codice cobol, avviene in FILE-CONTROL.
+### In FILE-CONTROL
+La lettura dei files da importare nel proprio codice cobol, avviene in **INPUT-OUTPUT SECTION**, nello specifico in FILE-CONTROL.
 
 *Esempio*:
 ```COBOL
+INPUT-OUTPUT SECTION.
 FILE-CONTROL.
            SELECT CostumerFIle1 ASSIGN TO "File.dat"
                ORGANIZATION IS LINE SEQUENTIAL
@@ -253,3 +256,42 @@ FILE-CONTROL.
  - ```ACCESS MODE IS RANDOM``` - Il programma può accedere a qualsiasi record direttamente utilizzando una chiave di ricerca. Usato solitamente con file organizzati ```INDEXED```.
  - ```ACCESS MODE IS DYNAMIC``` - alterna tra SEQUENTIAL e RANDOM.
  - ```RECORD KEY IS IDNum``` - specifica che la chiave di ricerca.
+
+### In PROCEDURE DIVISION
+Il comando OPEN permette di aprire un file in diverse modalità:
+ - ```OPEN OUTPUT File``` - se il file esiste già, viene sovrascritto.
+ - ```OPEN EXTEND File``` - nuovi dati verranno aggiunti alla fine. Se il file non esiste, lo crea.
+   - ```WRITE COSTUMERDATA END-WRITE.``` - crive i dati del record corrente. Il comando END-WRITE segna la fine dell'operazione di scrittura.
+ - ```OPEN INPUT File``` - solo lettura.
+   - ```READ File INTO Data [...] END-READ``` - crive i dati del record corrente.
+ - ```CLOSE File.``` - procede alla chiusura del file e a terminare il comando OPEN. 
+
+*Esempio di lettura dati con OPEN INPUT*:
+```COBOL
+OPEN INPUT File.
+    PERFORM UNTIL WSEOF='End'
+        READ File INTO Data
+            AT END MOVE 'End' TO WSEOF *>
+            NOT AT END DISPLAY Data
+        END-READ
+    END-PERFORM
+CLOSE File.
+```
+
+Il ciclo quindi ripete ciclicamente il file READ finché non si giunge alla fine
+
+### in FILE SECTION.
+La FILE SECTION in COBOL è una parte della **DATA DIVISION** che viene utilizzata per definire la struttura dei file che il programma dovrà gestire. In questa sezione si descrive il layout dei record dei file.
+*Esempio*:
+```COBOL
+DATA DIVISION.
+FILE SECTION.
+FD CostumerFile.
+       01 CostumerData.
+          02 Name PIC X(15).
+          02 LastName PIC X(15).
+```
+Dichiarazioni dei file:
+ - ```FD File``` - viene utilizzata per descrivere i file che verranno letti, scritti o aggiornati durante l'esecuzione di un programma COBOL.
+ - ```SD File``` - file temporanei durante un'operazione di ordinamento (SORT) o di fusione (MERGE) in COBOL.
+
