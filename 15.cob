@@ -5,9 +5,9 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CostumerReport ASSIGN TO "15CustReport.rpt"
+           SELECT CustomerReport ASSIGN TO "15CustReport.rpt"
                ORGANIZATION IS LINE SEQUENTIAL.
-           SELECT CustomerFIle ASSIGN TO "15costumer.txt"
+           SELECT CustomerFIle ASSIGN TO "15customer.txt"
                ORGANIZATION IS INDEXED
                ACCESS MODE IS RANDOM
                RECORD KEY IS IDNum.

@@ -32,7 +32,7 @@ IF Score IS PassingScore THEN [...]
 dove si definiscono tutte le variabili e le strutture dati
 
 # FILE SECTION.
-Dove si definiscono i file che il programma andra' a leggere o scrivere
+Dove si definiscono le strutture dei file che il programma andra' a leggere o scrivere
 
 # WORKING-STORAGE SECTION.
 Dove si dichiarano le variabili di lavoro, che sono variabili temporanee utilizzate durante l'elaborazione del programma.
@@ -127,7 +127,7 @@ Indica il codice eseguibile del programma
            02 CurrentMinute       PIC 99.
   ```
 ## Sottofunzioni
-### Paragrafi
+### Paragrafi [(File 10.cob)](./10.cob)
 I paragrafi (o sottofunzioni) vengono definiti e chiamati così:
 ```COBOL
   PERFORM Routine1. *> esegue la Routine1 e poi prosegue al punto successivo precedente
@@ -142,7 +142,7 @@ Alcuni esempi di chiamata PERFORM più avanzati:
  -  ```PERFORM Routine1 WITH TEST AFTER UNTIL Var > Num.```
  -  ```PERFORM Routine1 VARYING Var FROM 1 BY 1 UNTIL Var = Num.```
 
-### Subroutines
+### Subroutines [(File 9.cob)](./9.cob)
 Le sottoroutine devono essere compilate con questo comando
 ```BASH
 cobc -m RoutineFile.cob
@@ -192,7 +192,7 @@ PROCEDURE DIVISION.
     - ```INSPECT Str1 TALLYING Res FOR ALL ' '``` - vengono contati tutti gli spazi presenti in Str1.
 - ```MOVE FUNCTION UPPER-CASE(SampStr) TO UpperStr.``` - converte in maiuscolo.
   - ```MOVE FUNCTION LOWER-CASE(SampStr) TO UpperStr.``` - converte in minuscolo.
-### STRING
+### Il comando STRING e UNSTRING
 Il comando STRING permette di concatenare due o più stringhe, il cui limite deve essere dichiarato con ```DELIMITED BY```.
 ```COBOL
 STRING Nome DELIMITED BY SIZE   *> fino a dove dovrà fermarsi
@@ -225,3 +225,31 @@ Parte dal valore dichiarato e, dopo ogni esecuzione, viene aggiornato alla nuova
 STRING SSTR1 DELIMITED BY SIZE SPACE
            SSTR2 DELIMITED BY "#" INTO DEST WITH POINTER Ptr. 
 ```
+
+## Lettura dei files [(File 13.cob)](./13.cob)
+La lettura dei files da importare nel proprio codice cobol, avviene in FILE-CONTROL.
+
+*Esempio*:
+```COBOL
+FILE-CONTROL.
+           SELECT CostumerFIle1 ASSIGN TO "File.dat"
+               ORGANIZATION IS LINE SEQUENTIAL
+               ACCESS IS SEQUENTIAL.
+           SELECT CustomerFIle2 ASSIGN TO "File2.txt"
+               ORGANIZATION IS INDEXED
+               ACCESS MODE IS RANDOM
+               RECORD KEY IS IDNum.
+```
+*Nota1: VA RIMOSSO: CONFIGURATION SECTION, SPECIAL-NAMES.*
+
+**```SELECT```** associa un nome logico (CostumerFIle) al file fisico nel sistema.
+
+**```ORGANIZATION```** definisce la struttura interna del file (come i record sono memorizzati e indicizzati):
+ - ```ORGANIZATION IS LINE SEQUENTIAL``` - Ogni record è memorizzato su una singola linea e il file viene letto o scritto una linea alla volta.
+ - ```ORGANIZATION IS INDEXED``` - i record nel file possono essere acceduti tramite una chiave (indice).
+
+**```ACCESS```** definisce il metodo di accesso ai record nel file (come i record vengono letti o scritti dal programma):
+ - ```ACCESS IS SEQUENTIAL``` - Di **Default**, i record sono letti o **scritti** uno dopo l'altro nell'ordine in cui appaiono nel file.
+ - ```ACCESS MODE IS RANDOM``` - Il programma può accedere a qualsiasi record direttamente utilizzando una chiave di ricerca. Usato solitamente con file organizzati ```INDEXED```.
+ - ```ACCESS MODE IS DYNAMIC``` - alterna tra SEQUENTIAL e RANDOM.
+ - ```RECORD KEY IS IDNum``` - specifica che la chiave di ricerca.

@@ -5,7 +5,7 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT CostumerReport ASSIGN TO "CustReport.rpt"
+           SELECT CostumerReport ASSIGN TO "14CustReport.rpt"
                ORGANIZATION IS LINE SEQUENTIAL.
            SELECT CostumerFIle ASSIGN TO "14.dat"
                ORGANIZATION IS LINE SEQUENTIAL
