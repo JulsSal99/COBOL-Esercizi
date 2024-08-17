@@ -13,7 +13,7 @@ Nella repository troverai:
 - **Programmi di base:** Esercizi introduttivi per familiarizzare con la sintassi di COBOL.
 - **file .bat** per una comoda esecuzione dei file su Windows
 - [manuale](./MANUAL.MD) per avere un ripasso veloce dei comandi essenziali
-  - [manuale in PDF](./MANUAL.PDF)
+  - [manuale in PDF](./MANUAL.pdf)
 
 ## Come Eseguire i Programmi
 
