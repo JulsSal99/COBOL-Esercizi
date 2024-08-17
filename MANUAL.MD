@@ -52,6 +52,8 @@ Il numero viene formattato con PIC. Legenda dei simboli in PIC:
 - Z: diventa uno spazio se 0
 - V: virgola
 - S: signed
+- $: mostra il simbolo del dollaro, ma vicino alla cifra più a sinistra. 
+      Se non c'è abbastanza spazio, scarta la cifra più a destra. Vedi ["CASTING"](./11.cob)
 
 Nota1: Scrivere "9(2)" è uguale a scrivere "99".
 Nota2. "Value" da un valore di default.
@@ -92,7 +94,7 @@ Indica il codice eseguibile del programma
   - ```PERFORM UNTIL NOT Condition [...] END-PERFORM.``` - Ripete finché non viene violata la condizione
 ## azioni con le variabili
 - ```COMPUTE Risultato = Num1 ** Num2.``` - è utilizzato per eseguire operazioni aritmetiche e assegnare il risultato direttamente a una o più variabili.
-  - ```COMPUTE Num ROUNDED = 3.0 + 2.005.``` - ROUNDED arrotonda.
+  - ```COMPUTE Num ROUNDED = 3.0 + 2.005.``` - ROUNDED arrotonda in eccesso (eg. .71 divenda .8).
 - ```MOVE Num1 TO Num2.``` - trasferisce il valore di una variabile a un'altra variabile.
   - ```MOVE ALL n``` - riempie di n.
   - ```MOVE ZERO``` - riempie di zero.
@@ -165,4 +167,37 @@ E richiamate poi nel PROCEDURE DIVISION usando il nome del PROGRAM-ID:
 PROCEDURE DIVISION.
            CALL 'GETSUM' USING Num1, Num2, Sum1.
            DISPLAY Num1 " + "  Num2 " = " Sum1.
+```
+
+## Casting [(File 11.cob)](./11.cob)
+Il casting è il processo di conversione di un valore da un tipo di dato a un altro.
+In COBOL, se un numero è più grande della variabile di destinazione, l'elemento più a sinistra viene scartato.
+Esempio: 
+```COBOL
+WORKING-STORAGE SECTION.
+        01 BDay PIC 9(9) VALUE 912211974.
+        01 ADate PIC 99/99/9999.
+PROCEDURE DIVISION.
+        MOVE BDay TO ADate.
+        DISPLAY ADate.
+```
+
+```BASH
+12/21/1974
+```
+
+## Operazioni con le stringhe [(File 12.cob)](./12.cob)
+- ```INSPECT Str1 TALLYING Res FOR CHARACTERS``` - vengono contati tutti i caratteri presenti in Str1, inclusi gli spazi.
+  - ```INSPECT Str1 TALLYING Res FOR ALL char1``` - vengono contati tutti i char1 presenti in Str1.
+    - ```INSPECT Str1 TALLYING Res FOR ALL ' '``` - vengono contati tutti gli spazi presenti in Str1.
+- ```MOVE FUNCTION UPPER-CASE(SampStr) TO UpperStr.``` - converte in maiuscolo.
+  - ```MOVE FUNCTION LOWER-CASE(SampStr) TO UpperStr.``` - converte in minuscolo.
+### STRING
+Il comando STRING permette di concatenare due o più stringhe, il cui limite deve essere dichiarato con ```DELIMITED BY```.
+```COBOL
+STRING Nome DELIMITED BY SIZE   *> fino a dove dovrà fermarsi
+               SPACE DELIMITED BY SPACES     
+               Cognome DELIMITED BY SIZE 
+               INTO Persona
+               ON OVERFLOW DISPLAY 'Overflowed'.
 ```

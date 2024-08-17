@@ -24,15 +24,17 @@
        PROCEDURE DIVISION.
            INSPECT SampStr TALLYING TMPNum FOR CHARACTERS.
            DISPLAY "Numero di caratteri : " TMPNum.
+           MOVE 0 TO TMPNum.
            INSPECT SampStr TALLYING TMPNum FOR ALL 'e'.
            DISPLAY "Numero di E : " TMPNum.
            DISPLAY FUNCTION UPPER-CASE(SampStr).
            DISPLAY FUNCTION LOWER-CASE(SampStr).
 
-           STRING Nome DELIMITED BY SIZE SPACE Cognome DELIMITED BY SIZE
-           INTO Persona. *> DELIMITED BY SPACE: la stringa sarà
-                         *> considerata fino al primo spazio trovato
-                         *> DELIMITED BY SIZE: nell'interezza
+           STRING Nome DELIMITED BY SIZE   *> STRING concatena stringhe
+               SPACE DELIMITED BY SIZE     *> fino a dove dovrà fermarsi
+               Cognome DELIMITED BY SIZE 
+               INTO Persona
+               ON OVERFLOW DISPLAY 'Overflowed'.
            DISPLAY "Persona : " Persona.
            
            STRING Nome DELIMITED BY SPACES   SPACE
