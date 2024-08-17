@@ -196,8 +196,32 @@ PROCEDURE DIVISION.
 Il comando STRING permette di concatenare due o più stringhe, il cui limite deve essere dichiarato con ```DELIMITED BY```.
 ```COBOL
 STRING Nome DELIMITED BY SIZE   *> fino a dove dovrà fermarsi
-               SPACE DELIMITED BY SPACES     
-               Cognome DELIMITED BY SIZE 
+               SPACE            *> aggiunge uno spazio tra Nome e Cognome    
+               Cognome DELIMITED BY SIZE
                INTO Persona
-               ON OVERFLOW DISPLAY 'Overflowed'.
+               ON OVERFLOW 
+                    DISPLAY 'Overflowed'.
+```
+
+Unstring invece suddivide una stringa in più variabili.
+```COBOL
+UNSTRING Frase DELIMITED BY Delim
+        INTO Nome
+        Cognome
+        Titolo.
+```
+
+```ON OVERFLOW```, se il risultato della concatenazione supera la lunghezza del campo, esegue l'azione seguente.
+
+Tipi di DELIMITED:
+ - ```DELIMITED BY SIZE``` - La stringa viene considerata interamente.
+ - ```DELIMITED BY SPACE``` - considerata fino al primo spazio (o serie di spazi consecutivi con SPACES).
+ - ```DELIMITED BY ALL char``` - considerata fino al primo carattere specificato, ma se appare consecutivamente più volte, viene considerata l'intera sequenza.
+ - ```DELIMITED BY char``` - delimitato da una stringa letterale, un carattere o una variabile.
+
+Il puntatore (```WITH POINTER Ptr```) è una variabile numerica che tiene traccia della posizione corrente all'interno della stringa di destinazione. 
+Parte dal valore dichiarato e, dopo ogni esecuzione, viene aggiornato alla nuova posizione.
+```COBOL
+STRING SSTR1 DELIMITED BY SIZE SPACE
+           SSTR2 DELIMITED BY "#" INTO DEST WITH POINTER Ptr. 
 ```

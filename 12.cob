@@ -31,7 +31,7 @@
            DISPLAY FUNCTION LOWER-CASE(SampStr).
 
            STRING Nome DELIMITED BY SIZE   *> STRING concatena stringhe
-               SPACE DELIMITED BY SIZE     *> fino a dove dovrà fermarsi
+               SPACE     *> fino a dove dovrà fermarsi
                Cognome DELIMITED BY SIZE 
                INTO Persona
                ON OVERFLOW DISPLAY 'Overflowed'.
