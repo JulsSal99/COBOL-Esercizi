@@ -58,11 +58,17 @@ Il numero viene formattato con PIC. Legenda dei simboli in PIC:
 Nota1: Scrivere "9(2)" è uguale a scrivere "99".
 Nota2. "Value" da un valore di default.
 
-Esempio: 
+*Esempio1*: 
 ```COBOL
 01 PIValue CONSTANT AS 3.14.
 ```
 Crea una costante.
+
+*Esempio2*: 
+```COBOL
+02 FILLER PIC X VALUE SPACE.
+```
+Filler è un campo temporaneo o di riempimento
 
 Esempio:
 ```COBOL
