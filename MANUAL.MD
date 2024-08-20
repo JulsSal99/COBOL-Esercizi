@@ -67,8 +67,11 @@ Crea una costante.
 *Esempio2*: 
 ```COBOL
 02 FILLER PIC X VALUE SPACE.
+[...]
+01 PageHeading.
+           02 FILLER PIC X(13) VALUE "Costumer List".
 ```
-Filler è un campo temporaneo o di riempimento
+Filler è un campo temporaneo o di riempimento all'interno di una struttura dati, come record o gruppi di dati, senza assegnare loro un nome. 
 
 Esempio:
 ```COBOL
@@ -267,9 +270,16 @@ FILE-CONTROL.
 Il comando OPEN permette di aprire un file in diverse modalità:
  - ```OPEN OUTPUT File``` - se il file esiste già, viene sovrascritto.
  - ```OPEN EXTEND File``` - nuovi dati verranno aggiunti alla fine. Se il file non esiste, lo crea.
-   - ```WRITE COSTUMERDATA END-WRITE.``` - crive i dati del record corrente. Il comando END-WRITE segna la fine dell'operazione di scrittura.
+   - ```WRITE Data END-WRITE.``` - crive i dati del record corrente. Il comando END-WRITE segna la fine dell'operazione di scrittura.
+     - ```WRITE FSFile FROM WSData AFTER ADVANCING PAGE``` - Crea una nuova pagina e scrive WSData in FSFile.
+     - ```AFTER FSFile FROM WSData ADVANCING 5 LINES``` - Avanza di 5 linee e scrive WSData.
  - ```OPEN INPUT File``` - solo lettura.
    - ```READ File INTO Data [...] END-READ``` - crive i dati del record corrente.
+ - ```OPEN I-O File.``` permette sia di leggere sia di scrivere sul file (che deve già esistere)
+   - ```WRITE FSData INVALID KEY DISPLAY "ID Taken"```
+   - ```DELETE File INVALID KEY DISPLAY "ERROR" END-DELETE.```
+   - ```REWRITE Data INVALID KEY DISPLAY "ERROR" END-REWRITE.```
+   - ```READ File INVALID KEY DISPLAY "ERROR" END-READ.```
  - ```CLOSE File.``` - procede alla chiusura del file e a terminare il comando OPEN. 
 
 *Esempio di lettura dati con OPEN INPUT*:
@@ -293,11 +303,45 @@ La FILE SECTION in COBOL è una parte della **DATA DIVISION** che viene utilizza
 DATA DIVISION.
 FILE SECTION.
 FD CostumerFile.
-       01 CostumerData.
-          02 Name PIC X(15).
-          02 LastName PIC X(15).
+01 CostumerData.
+  02 Name PIC X(15).
+  02 LastName PIC X(15).
 ```
+*Nota:* I nomi in FILE SECTION devono essere diversi WORKING-STORAGE SECTION.
 Dichiarazioni dei file:
  - ```FD File``` - viene utilizzata per descrivere i file che verranno letti, scritti o aggiornati durante l'esecuzione di un programma COBOL.
  - ```SD File``` - file temporanei durante un'operazione di ordinamento (SORT) o di fusione (MERGE) in COBOL.
 
+```COBOL
+FD CostumerFile.
+01 CostumerData.
+  [...]
+  88 WSEOF VALUE HIGH-VALUE.
+```
+
+### in PROCEDURE DIVISION [(File14.cob)](./14.cob)
+L'esercizio seguente [(File14.cob)](./14.cob) scrive con WRITE l'inizio di una pagina nel file.
+```COBOL
+FILE SECTION.
+  FD CostumerReport.
+        01 PrintLine PIC X(44).
+WORKING-STORAGE SECTION.
+  01 PageHeading.
+            02 FILLER PIC X(13) VALUE "Costumer List".
+  01 LineCount PIC 99 VALUE ZERO.
+            88 NewPageRequired VALUE 40 THRU 99.
+
+PROCEDURE DIVISION.
+  WRITE PrintLine FROM PageHeading AFTER ADVANCING PAGE.
+  WRITE PrintLine FROM Heads AFTER ADVANCING 5 LINES.
+  MOVE 3 TO LineCount.
+  IF NewPageRequired 
+    ADD 1 TO PageCount. *> è superata la pagina, aggiunge 1 a PageCount
+```
+Il seguente codice esegue la scrittura dei dati ```CostumerDetailLine``` un campo alla volta fino a ```WSEOF```.
+```COBOL
+PERFORM PrintReportBody UNTIL WSEOF
+PrintReportBody.
+  WRITE PrintLine FROM CostumerDetailLine AFTER ADVANCING 1 LINE
+  ADD 1 TO LineCount.
+```
