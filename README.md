@@ -1,4 +1,4 @@
-<img src="./logo.png" alt="logoCOBOL" width="250">
+<img src="./img/logo.png" alt="logoCOBOL" width="250">
 
 # Esercizi COBOL
 
