@@ -356,4 +356,4 @@ Una tabella viene definita così:
                03 ProdSize OCCURS 3 TIMES INDEXED BY J.
                    04 SizeType PIC A.
 ```
-<img src="./MANUALtable.png" alt="tabella" width="700">
+<img src="./img/MANUALtable.png" alt="tabella" width="700">
