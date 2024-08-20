@@ -357,3 +357,7 @@ Una tabella viene definita così:
                    04 SizeType PIC A.
 ```
 <img src="./img/MANUALtable.png" alt="tabella" width="700">
+
+```INDEXED BY I.``` è un indice dei dati che viene gestito internamente dal compilatore e non può essere manipolato dall'utente
+Può essere manipolato con:
+SET, SEARCH, o PERFORM VARYING.
