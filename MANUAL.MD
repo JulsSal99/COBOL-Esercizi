@@ -345,3 +345,15 @@ PrintReportBody.
   WRITE PrintLine FROM CostumerDetailLine AFTER ADVANCING 1 LINE
   ADD 1 TO LineCount.
 ```
+
+## Tabelle [(File 16.cob)](./16.cob)
+Una tabella viene definita così:
+```COBOL
+01 OrderTable.
+           02 Product OCCURS 2 TIMES INDEXED BY I.
+               03 ProdName PIC X(10).
+               03 WS-SPACE PIC X(1) VALUE ' '.
+               03 ProdSize OCCURS 3 TIMES INDEXED BY J.
+                   04 SizeType PIC A.
+```
+<img src="./MANUALtable.png" alt="tabella" width="700">
