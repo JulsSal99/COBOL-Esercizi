@@ -17,7 +17,7 @@
                03 LName PIC X(15).
 
        01 OrderTable.
-           02 Product OCCURS 2 TIMES INDEXED BY I.
+           02 Product OCCURS 3 TIMES INDEXED BY I.
                03 ProdName PIC X(10).
                03 WS-SPACE PIC X(1) VALUE ' '.
                03 ProdSize OCCURS 3 TIMES INDEXED BY J.
@@ -49,8 +49,15 @@
            MOVE 'M' TO ProdSize(I,J). *> (1,2)
            SET J DOWN BY 1.
            DISPLAY "1: " OrderTable.
-           MOVE 'Blue Shirt SMLRed Shirt SML' TO ORDERTABLE.
+           MOVE 'Blue Shirt SMLRed Shirt S  Blank Shirt S' TO 
+           ORDERTABLE.
            DISPLAY "2: " OrderTable.
+           MOVE 'Grey Shirt S' TO Product(3).
+           DISPLAY "Product 3: " Product(3).
+           SET I UP BY 1.
+           DISPLAY "Product " I ": " Product(I).
+           MOVE 'Grey Shirt S' TO Product(I).
+           DISPLAY "3: " OrderTable.
            PERFORM GetProduct VARYING I FROM 1 BY 1 UNTIL I>2.
            GO TO LookUp.
            GetProduct.
@@ -59,13 +66,13 @@
            GetSizes.
                DISPLAY "GetSizes: J:", J, " - " ProdSize(I,J).
            LookUp.
-               SET I TO 1.
+               SET I TO 4.  *> indica il punto di partenza
                SEARCH PRODUCT *> FORMALITA' per iniziare una ricerca
                    AT END DISPLAY 'Product Not Found'
-                   WHEN ProdName(I) = 'Red Shirt' *> I vale 1
-                       DISPLAY 'Red Shirt Found' *> ProdSize è solo un indice.
+                   WHEN ProdName(I) = 'Blue Shirt'
+                       DISPLAY 'Blue Shirt Found' *> ProdSize è solo un indice.
                        PERFORM GetSizes
-                   END-SEARCH.
+               END-SEARCH.
            DISPLAY "------------"
 
            STOP RUN.

@@ -136,8 +136,10 @@ Indica il codice eseguibile del programma
            02 CurrentHour       PIC 99.
            02 CurrentMinute       PIC 99.
   ```
+<Br><Br>
+
 ## Sottofunzioni
-### Paragrafi [(File 10.cob)](./10.cob)
+### Paragrafi (File [10.cob](./10.cob))
 I paragrafi (o sottofunzioni) vengono definiti e chiamati così:
 ```COBOL
   PERFORM Routine1. *> esegue la Routine1 e poi prosegue al punto successivo precedente
@@ -152,7 +154,7 @@ Alcuni esempi di chiamata PERFORM più avanzati:
  -  ```PERFORM Routine1 WITH TEST AFTER UNTIL Var > Num.```
  -  ```PERFORM Routine1 VARYING Var FROM 1 BY 1 UNTIL Var = Num.```
 
-### Subroutines [(File 9.cob)](./9.cob)
+### Subroutines (File [9.cob](./9.cob))
 Le sottoroutine devono essere compilate con questo comando
 ```BASH
 cobc -m RoutineFile.cob
@@ -178,23 +180,48 @@ PROCEDURE DIVISION.
            CALL 'GETSUM' USING Num1, Num2, Sum1.
            DISPLAY Num1 " + "  Num2 " = " Sum1.
 ```
+<Br><Br>
 
-## Casting [(File 11.cob)](./11.cob)
+## Casting (File [11.cob](./11.cob) e [17.cob](./17.cob))
 Il casting è il processo di conversione di un valore da un tipo di dato a un altro.
 In COBOL, se un numero è più grande della variabile di destinazione, l'elemento più a sinistra viene scartato.
 Esempio: 
 ```COBOL
 WORKING-STORAGE SECTION.
+        *> numero a data
         01 BDay PIC 9(9) VALUE 912211974.
         01 ADate PIC 99/99/9999.
+        *> numero a dollaro
+        01 FLNum PIC 9999V99 VALUE 3579.00.
+        01 DollarNum PIC $$,$$9.99.
 PROCEDURE DIVISION.
         MOVE BDay TO ADate.
-        DISPLAY ADate.
+        MOVE FlNum TO DollarNum
 ```
 
 ```BASH
 12/21/1974
+$3,579.00
 ```
+
+<Br>Un'altro metodo di onversione usando solo ```WORKING-STORAGE SECTION```.
+```COBOL
+01 ChangeMe.
+        02 TextNum PIC X(6).
+        02 FloatNum REDEFINES TextNum PIC 9(4)V99.
+```
+
+<Br>Combinando UNSTRING e REDEFINES:
+```COBOL
+01 SplitNum.
+        02 WNum PIC 9(4) VALUE ZERO.
+        02 FNum PIC 99 VALUE ZERO.
+01 FLNum REDEFINES SplitNum PIC 9999V99.
+PROCEDURE DIVISION.
+        UNSTRING StrNum
+            DELIMITED BY "." OR SPACES INTO WNum, FNum
+```
+<Br><Br>
 
 ## Operazioni con le stringhe [(File 12.cob)](./12.cob)
 - ```INSPECT Str1 TALLYING Res FOR CHARACTERS``` - vengono contati tutti i caratteri presenti in Str1, inclusi gli spazi.
@@ -202,6 +229,7 @@ PROCEDURE DIVISION.
     - ```INSPECT Str1 TALLYING Res FOR ALL ' '``` - vengono contati tutti gli spazi presenti in Str1.
 - ```MOVE FUNCTION UPPER-CASE(SampStr) TO UpperStr.``` - converte in maiuscolo.
   - ```MOVE FUNCTION LOWER-CASE(SampStr) TO UpperStr.``` - converte in minuscolo.
+
 ### Il comando STRING e UNSTRING
 Il comando STRING permette di concatenare due o più stringhe, il cui limite deve essere dichiarato con ```DELIMITED BY```.
 ```COBOL
@@ -213,9 +241,9 @@ STRING Nome DELIMITED BY SIZE   *> fino a dove dovrà fermarsi
                     DISPLAY 'Overflowed'.
 ```
 
-Unstring invece suddivide una stringa in più variabili.
+<br> Unstring invece suddivide una stringa in più variabili utilizzando un delimitatore ```Delim```.
 ```COBOL
-UNSTRING Frase DELIMITED BY Delim
+UNSTRING Frase DELIMITED BY Delim OR SPACES
         INTO Nome
         Cognome
         Titolo.
@@ -235,6 +263,71 @@ Parte dal valore dichiarato e, dopo ogni esecuzione, viene aggiornato alla nuova
 STRING SSTR1 DELIMITED BY SIZE SPACE
            SSTR2 DELIMITED BY "#" INTO DEST WITH POINTER Ptr. 
 ```
+<Br><Br>
+
+## Tabelle [(File 16.cob)](./16.cob)
+Una tabella viene definita così:
+```COBOL
+01 OrderTable.
+      02 Product OCCURS 3 TIMES INDEXED BY I.
+          03 ProdName PIC X(10).
+          03 WS-SPACE PIC X(1) VALUE ' '.
+          03 ProdSize OCCURS 3 TIMES INDEXED BY J.
+              04 SizeType PIC A.
+```
+<img src="./img/MANUALtable.png" alt="tabella" width="700">
+
+```INDEXED BY I.``` è un indice dei dati che viene gestito internamente dal compilatore e non può essere manipolato dall'utente
+Può essere manipolato con:
+SET, SEARCH, o PERFORM VARYING.
+
+Per aggiungere valori:
+```COBOL
+SET I J TO 1. *> Inizializza le variabili I e J a 1
+MOVE 'Blue Shirt' TO Product(I). *> Product(1)
+MOVE 'S' TO ProdSize(I,J). *> ProdSize(riga,colonna) (1,1)
+SET J UP BY 1.
+MOVE 'M' TO ProdSize(I,J). *> (1,2)
+MOVE 'Blue Shirt SMLRed Shirt S  Blank Shirt S' TO 
+ORDERTABLE. *> sovrascrive "Blue Shirt SM "
+MOVE 'Grey Shirt S' TO Product(3).
+```
+
+Per mostrare la tabella e i campi:
+- ```DISPLAY OrderTable.``` mostra tutti i campi su un'unica riga. Ogni campo viene stampato. Tra un valore e l'altro non c'è uno spazio.
+- ```DISPLAY "Product " I ": " Product(I).``` - mostra l'elemento I nella sua interezza.
+
+Per mostrare tutti gli elementi collegati a quel campo:
+```COBOL
+PERFORM GetSizes VARYING J FROM 1 BY 1 UNTIL J>3.
+DISPLAY "Size " I ": " Product(I,J).
+```
+<Br>Per cercare un elemento:
+```COBOL
+SET I TO 1. *> indica il punto di partenza
+SEARCH PRODUCT *> FORMALITA' per iniziare una ricerca
+    AT END DISPLAY 'Product Not Found'
+    WHEN ProdName(I) = 'Blue Shirt'
+        DISPLAY 'Blue Shirt Found' *> ProdSize è solo un indice.
+        PERFORM GetSizes
+    END-SEARCH.
+```
+<br>
+
+### Conversione di dati in tabella
+```COBOL
+01 ProdTable.
+    02 ProdData.
+        03 FILLER PIC X(9) VALUE "Red   SML".
+        03 FILLER PIC X(9) VALUE "Blue  SML".
+        03 FILLER PIC X(9) VALUE "Green SML".
+    02 FILLER REDEFINES ProdData.
+        03 Shirt OCCURS 3 TIMES.
+            04 ProdName PIC X(6).
+            04 ProdSizes PIC A OCCURS 3 TIMES.
+```
+
+<Br><Br>
 
 ## Lettura dei files [(File 13.cob)](./13.cob)
 ### In FILE-CONTROL
@@ -345,19 +438,3 @@ PrintReportBody.
   WRITE PrintLine FROM CostumerDetailLine AFTER ADVANCING 1 LINE
   ADD 1 TO LineCount.
 ```
-
-## Tabelle [(File 16.cob)](./16.cob)
-Una tabella viene definita così:
-```COBOL
-01 OrderTable.
-           02 Product OCCURS 2 TIMES INDEXED BY I.
-               03 ProdName PIC X(10).
-               03 WS-SPACE PIC X(1) VALUE ' '.
-               03 ProdSize OCCURS 3 TIMES INDEXED BY J.
-                   04 SizeType PIC A.
-```
-<img src="./img/MANUALtable.png" alt="tabella" width="700">
-
-```INDEXED BY I.``` è un indice dei dati che viene gestito internamente dal compilatore e non può essere manipolato dall'utente
-Può essere manipolato con:
-SET, SEARCH, o PERFORM VARYING.
