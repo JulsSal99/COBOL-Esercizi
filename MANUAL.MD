@@ -371,7 +371,7 @@ Il comando OPEN permette di aprire un file in diverse modalità:
  - ```OPEN I-O File.``` permette sia di leggere sia di scrivere sul file (che deve già esistere)
    - ```WRITE FSData INVALID KEY DISPLAY "ID Taken"```
    - ```DELETE File INVALID KEY DISPLAY "ERROR" END-DELETE.```
-   - ```REWRITE Data INVALID KEY DISPLAY "ERROR" END-REWRITE.```
+   - ```REWRITE Data INVALID KEY DISPLAY "ERROR" END-REWRITE.``` - solo in modalità I-O. Sovrascrive l'ultimo record letto.
    - ```READ File INVALID KEY DISPLAY "ERROR" END-READ.```
  - ```CLOSE File.``` - procede alla chiusura del file e a terminare il comando OPEN. 
 
@@ -411,6 +411,7 @@ FD CostumerFile.
   [...]
   88 WSEOF VALUE HIGH-VALUE.
 ```
+<br>
 
 ### in PROCEDURE DIVISION [(File14.cob)](./14.cob)
 L'esercizio seguente [(File14.cob)](./14.cob) scrive con WRITE l'inizio di una pagina nel file.
@@ -437,4 +438,24 @@ PERFORM PrintReportBody UNTIL WSEOF
 PrintReportBody.
   WRITE PrintLine FROM CostumerDetailLine AFTER ADVANCING 1 LINE
   ADD 1 TO LineCount.
+```
+
+## SORT e MERGE su un file (File [18.cob](./18.cob))
+```COBOL
+FILE-CONTROL.
+        SELECT WorkFile ASSIGN TO 'work.tmp'.
+        SELECT OrgFile ASSIGN TO '18student.dat'
+               ORGANIZATION IS LINE SEQUENTIAL.
+        SELECT SortedFile ASSIGN TO '18student2.dat'
+               ORGANIZATION IS LINE SEQUENTIAL.
+FILE SECTION.
+        FD OrgFile. [...]
+        SD WorkFile. [...]
+        FD SortedFile.
+          01 SStudData.
+            02 SSIDNum PIC 9. [...]
+PROCEDURE DIVISION.
+    SORT WorkFile ON ASCENDING KEY SSIdNum
+        USING OrgFile
+        GIVING SortedFile.
 ```

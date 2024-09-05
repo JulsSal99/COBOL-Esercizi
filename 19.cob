@@ -1,41 +1,50 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID.       merge-records.
+       PROGRAM-ID.       SQLCA.
        AUTHOR.       Giulio.
-       DATE-WRITTEN.11/08/2024
+       DATE-WRITTEN.00/00/0000
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           *> Merge Exercise
-           SELECT WorkFile ASSIGN TO 'work.tmp'.
-           SELECT File1 ASSIGN TO '18student.dat'
-               ORGANIZATION IS LINE SEQUENTIAL.
-           SELECT File2 ASSIGN TO '18student3.dat'
-               ORGANIZATION IS LINE SEQUENTIAL.
-           SELECT NewFile ASSIGN TO '19student4.dat'
-               ORGANIZATION IS LINE SEQUENTIAL.
+
        DATA DIVISION.
-       FILE SECTION.
-       FD File1. *> Per il MERGE i file devono essere FD (File Description).
-       01 StudData.
-           02 IDNum PIC 9.
-           02 StudName PIC X(10).
-       FD File2.
-       01 StudData2.
-           02 IDNum2 PIC 9.
-           02 StudName2 PIC X(10).
-       SD WorkFile. *> SD (Sort Description)
-       01 WStudData.
-           02 WIDNum PIC 9.
-           02 WStudName PIC X(10).
-       FD NewFile.
-       01 NStudData.
-           02 NIDNum PIC 9.
-           02 NStudName PIC X(10).
        WORKING-STORAGE SECTION.
+       EXEC SQL
+           INCLUDE SQLCA
+       END-EXEC.   *> SQLCA Indica al programma se un'esecuzione è andata 
+                   *> a buon fine o meno.
+       
+       EXEC SQL
+           INCLUDE STUDENT
+       END-EXEC.
+       
+       EXEC SQL BEGIN DECLARE SECTION
+       END-EXEC.
+
+       01 WS-STUDENT-REC.
+           05 WS-STUDENT-ID PIC 9(4).
+           05 WS-STUDENT-NAME PIC X(25).
+           05 WS-STUDENT-ADDRESS X(50).
+
+       EXEC SQL END DECLARE SECTION
+       END-EXEC.
        
        PROCEDURE DIVISION.
-           MERGE WorkFile ON ASCENDING KEY NIDNum USING File1, File2
-           GIVING NewFile.
-
-
-           STOP RUN.
+       MOVE 1005 TO WS-STUDENT-ID.
+       MOVE 'TutorialsPoint' TO WS-STUDENT-NAME.
+       MOVE 'Hyderabad' TO WS-STUDENT-ADDRESS.
+           *> dichiara SQLCA.
+       EXEC SQL
+           SELECT STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS
+           INTO :WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS 
+               FROM STUDENT
+           WHERE STUDENT-ID=1004
+           INSERT INTO STUDENT(STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS) 
+           VALUES (:WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS)
+       END-EXEC.
+       
+           IF SQLCODE = 0  *> controlla se sono avvenuti eventuali errori
+               DISPLAY WS-STUDENT-RECORD
+           ELSE 
+               DISPLAY 'Error'
+           END-IF.
+       STOP RUN.
