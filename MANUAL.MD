@@ -46,6 +46,7 @@ Legenda del primo numero:
 - 66: per definire "renames" (alias) per altre variabili.
 - 77: per definire variabili indipendenti, non strutturate.
 - 88: per definire condizioni o valori booleani.
+
 Il numero viene formattato con PIC. Legenda dei simboli in PIC:
 - 9: Numerico
 - X: AlfaNumerico
