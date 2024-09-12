@@ -31,10 +31,10 @@ IF Score IS PassingScore THEN [...]
 # DATA DIVISION.
 dove si definiscono tutte le variabili e le strutture dati
 
-# FILE SECTION.
+## FILE SECTION.
 Dove si definiscono le strutture dei file che il programma andra' a leggere o scrivere
 
-# WORKING-STORAGE SECTION.
+## WORKING-STORAGE SECTION.
 Dove si dichiarano le variabili di lavoro, che sono variabili temporanee utilizzate durante l'elaborazione del programma.
 I nomi devono essere univoci, MA possono essere uguali in gruppi differenti. 
 Esempio: 
@@ -85,6 +85,27 @@ Ci sono tre condizioni precaricate che si possono controllare nel PROCEDURE DIVI
 ```COBOL
 WHEN IsPrime DISPLAY "Primo"
 ```
+
+## SCREEN SECTION 
+Le screen section sono strutture usate per creare interfacce video di input-output.
+```COBOL
+   01 STUDENT-SCREEN.
+      05 LINE 1 COLUMN 10 VALUE "Enter Student ID:".
+      05 LINE 1 COLUMN 30 PIC 9(5) TO WS-STUDENT-ID.
+      05 LINE 2 COLUMN 10 VALUE "Enter Student Name:".
+      05 LINE 2 COLUMN 30 PIC X(20) TO WS-STUDENT-NAME.
+```
+Nell'esempio precedente, COLUMN e LINE dichiarano la posizione a schermo
+Nella procedure division viene poi dichiarato:
+```COBOL
+   PROCEDURE DIVISION.
+       MAIN-LOGIC.
+           DISPLAY STUDENT-SCREEN.
+           ACCEPT STUDENT-SCREEN.
+```
+
+Per esempio, 20.cob stampa a schermo:
+<img src="./img/20.png" alt="logoCOBOL" width="500">
 
 # PROCEDURE DIVISION.
 Indica il codice eseguibile del programma
