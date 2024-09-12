@@ -94,7 +94,7 @@ Indica il codice eseguibile del programma
 - ```ACCEPT Num1.``` - prende Num1 in input.
 - 
 ## Condizioni e Cicli
-- ```if Operatore="/" THEN```  - esegue un ciclo if THEN.
+- ```IF VARIABILE = 1 THEN [...] ELSE IF [...] ELSE [...] END-IF.```  - esegue un ciclo if THEN ELSE.
   - ```IF Val1 IS Val2 THEN [...] END-IF. ```
   - ```IF Num1 LESS THAN Num2 THEN [...] END-IF. ```
   - ```IF Num1 > Num2 AND Num3 < Num4 THEN [...] END-IF. ```
@@ -459,4 +459,104 @@ PROCEDURE DIVISION.
     SORT WorkFile ON ASCENDING KEY SSIdNum
         USING OrgFile
         GIVING SortedFile.
+```
+
+# DB2
+## Dichiarare variabili e includere tabelle (File [19.cob](./19.cob))
+```COBOL
+   DATA DIVISION.
+   WORKING-STORAGE SECTION.
+   
+   EXEC SQL
+   INCLUDE table-name
+   END-EXEC.
+
+   EXEC SQL BEGIN DECLARE SECTION
+   END-EXEC.
+   
+   01 STUDENT-REC.
+      05 STUDENT-ID PIC 9(4).
+      05 STUDENT-NAME PIC X(25).
+      05 STUDENT-ADDRESS X(50).
+   EXEC SQL END DECLARE SECTION
+   END-EXEC.
+```
+
+## Controllo degli errori
+SQLCA Indica al programma se un'esecuzione è andata a buon fine.
+```COBOL
+  WORKING-STORAGE SECTION.
+      EXEC SQL
+          INCLUDE SQLCA
+      END-EXEC.
+      [...]
+  PROCEDURE DIVISION.
+      IF SQLCODE = 0 
+          DISPLAY 'Success'
+      ELSE DISPLAY 'Error'
+      END-IF.
+```
+
+## Select
+```COBOL
+   EXEC SQL
+      SELECT STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS
+      INTO :WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS FROM STUDENT
+      WHERE STUDENT-ID=1004
+   END-EXEC.
+```
+
+## Insert
+```COBOL
+   MOVE 1005 TO WS-STUDENT-ID.
+   MOVE 'TutorialsPoint' TO WS-STUDENT-NAME.
+   MOVE 'Hyderabad' TO WS-STUDENT-ADDRESS.
+   EXEC SQL
+      INSERT INTO STUDENT(STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS)
+      VALUES (:WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS)
+```
+
+## Update
+```COBOL
+      UPDATE STUDENT SET STUDENT-ADDRESS=:WS-STUDENT-ADDRESS
+      WHERE STUDENT-ID = 1003
+```
+
+## Delete
+```COBOL
+   MOVE 1005 TO WS-STUDENT-ID.
+   EXEC SQL
+      DELETE FROM STUDENT
+      WHERE STUDENT-ID=:WS-STUDENT-ID
+```
+
+## Cursore
+Un cursore è uno strumento che permette di recuperare e gestire righe multiple restituite da una query SQL, consentendo di elaborarle in modo sequenziale.
+
+Open prepara il SELECT per l'esecuzione e close rilascia la memoria occupata dal cursore. 
+```COBOL
+   EXEC SQL
+      OPEN STUDCUR
+      [...]
+      CLOSE STUDCUR
+   END-EXEC.
+```
+
+Esempio di codice che dichiara un cursore che seleziona gli studenti con STUDENT-ID maggiore di 1001 e scorre i risultati uno alla volta, visualizzando i dati di ogni studente fino a quando non sono esauriti (indicati da SQLCODE = 100):
+```COBOL
+   WORKING-STORAGE SECTION.
+      EXEC SQL
+         DECLARE STUDCUR CURSOR FOR
+         SELECT STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS FROM STUDENT
+         WHERE STUDENT-ID >:WS-STUDENT-ID
+      END-EXEC.
+   PROCEDURE DIVISION.
+      MOVE 1001 TO WS-STUDENT-ID.
+      PERFORM UNTIL SQLCODE = 100
+          EXEC SQL
+              FETCH STUDCUR
+              INTO :WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS
+          END-EXEC
+          DISPLAY WS-STUDENT-REC
+      END-PERFORM
 ```

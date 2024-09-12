@@ -38,12 +38,19 @@
            INTO :WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS 
                FROM STUDENT
            WHERE STUDENT-ID=1004
+
            INSERT INTO STUDENT(STUDENT-ID, STUDENT-NAME, STUDENT-ADDRESS) 
            VALUES (:WS-STUDENT-ID, :WS-STUDENT-NAME, WS-STUDENT-ADDRESS)
+           
+           UPDATE STUDENT SET STUDENT-ADDRESS=:WS-STUDENT-ADDRESS
+           WHERE STUDENT-ID = 1003
+
+           DELETE FROM STUDENT
+           WHERE STUDENT-ID=:WS-STUDENT-ID
        END-EXEC.
        
            IF SQLCODE = 0  *> controlla se sono avvenuti eventuali errori
-               DISPLAY WS-STUDENT-RECORD
+               DISPLAY WS-STUDENT-REC
            ELSE 
                DISPLAY 'Error'
            END-IF.
