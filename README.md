@@ -14,6 +14,8 @@ Nella repository troverai:
 - **file .bat** per una comoda esecuzione dei file su Windows
 - [manuale](./MANUAL.MD) per avere un ripasso veloce dei comandi essenziali
   - [manuale in PDF](./MANUAL.pdf)
+- [manuale sull'AS400](./AS400%20MANUAL.MD)
+  - [manuale in PDF](./AS400%20MANUAL.pdf)
 
 ## Come Eseguire i Programmi
 
@@ -46,4 +48,5 @@ Testato con:
 
 - COBOL Tutorial : Learn COBOL in One Video - Derek Banas
 - tutorial COBOL : Adriano Grimaldi
-- NEXT STEP: https://www.tutorialspoint.com/cobol/index.htm
+- https://www.tutorialspoint.com/cobol/index.htm
+- Documentazione sull'AS400: https://www.neroni.it/scaricabili/Corso-As400-2023-Manuale.pdf
