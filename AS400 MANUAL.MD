@@ -1,20 +1,24 @@
-# Nozioni di AS400
+# Nozioni di AS400 (IBMi)
+L'AS400 è un mainframe (che funziona da server web, etc.) collegato a vari terminali emulati.
+I caratteri sull'AS400 sono lunghi massimo 10 caratteri.
+I campi di input-output sono sottolineati e si possono navigare usando la tabulatura. Un campo sottolineato bianco è obbligatorio, mentre gli altri solitamente hanno valori di default.
 
- - ```signoff``` - per deloggarsi da terminale
- - ```CHGPWD``` - per cambiare password
+Nella prima schermata c'è ```Sistema```, ```Sottosistema``` (entrambi indicati con Q sia di AS/400 sia dichiarati dall'utente. I sistemi e sottosistemi sono a lotti "batch").
+
+I comandi sono oggetti di 10 caratteri: _verbo + (attributo) + predicato_ tendenzialmente senza vocali:
  - SHIFT + Fn - formula i numeri superiori al 12 fino al 24.
 
-L'asterisco in AS/400 può servire per ricerca di oggetti o parametri di comando: 
+L'asterisco in AS/400 indica un valore simbolico e può servire per ricerca di oggetti o parametri di comando: 
    - ad esempio, se cerchi un file usando MYFILE*, il sistema restituirà tutti i file che iniziano con MYFILE, come MYFILE1, MYFILEA, ecc.
    - ```*ALL```: Utilizzato per indicare che si desidera considerare tutti gli oggetti o tutti i valori possibili in un determinato contesto (eg. ```WRKOBJ OBJ(MYLIB/*ALL)```).
 
 Molti comandi utilizzano acronimi che seguono una struttura ben definita per eseguire varie operazioni sul sistema
  - ```DSP``` (Display. eg. ```DSPJOB```, visualizza solo, non modifica)
  - ```WRK``` (Work with. eg. ```WRKLIB```, ```WRKOBJ```) - visualizzare e interagire con gli oggetti
- - ```CHG``` (Change. eg. ```CHGJOB```)
+ - ```CHG``` (Change. eg. ```CHGJOB```, ```CHGPWD``` cambiare password)
  - ```DLT``` (Delete)
  - ```CRT``` (Create. eg ```CRTJOBQ```, ```CRTLIB```)
- - ```END``` (End)
+ - ```END``` (End: termina)
  - ```SND``` (Send)
  - ```STR``` (Start)
  - ```RST``` (Restore)
@@ -22,27 +26,29 @@ Molti comandi utilizzano acronimi che seguono una struttura ben definita per ese
 l'asterisco viene usato per specificare un valore speciale o una scelta predefinita: ```*ALL```, ```*NONE```, ```*CURRENT``` (contesto corrente o l'utente corrente), ```*SYSVAL```. 
 
 ## I tasti funzione
- - F1 - Help: Mostra la guida in linea per la schermata corrente o il comando che stai utilizzando. 
+ - F1 - Help: Mostra la guida in linea per la schermata corrente o il comando che stai utilizzando. Se il cursore si trova su una sezione dello schermo, mostra una una descrizione della porzione di testo. 
  - F2 - Change: Permette di modificare le informazioni nella schermata corrente.
  - F3 - Exit: Esce dalla schermata corrente o annulla l'operazione in corso.
  - F4 - Prompt: Mostra i parametri di input per il comando corrente, consentendo di inserire i valori richiesti.
  - F5 - Refresh: Ricarica la schermata corrente, utile per aggiornare le informazioni visualizzate.
  - F6 - Create: Permette di creare nuovi oggetti, come file, librerie, ecc.
  - F7 - Scroll Up: Scorre verso l'alto nella schermata corrente.
- - F8 - Scroll Down: Scorre verso il basso nella schermata corrente.
- - F9 - ripete l'ultimo comando.
- - F10 - Display/Hide Menu: Mostra o nasconde il menu principale nella schermata corrente.
- - F12 - Cancel: Annulla l'operazione corrente o torna alla schermata precedente.
+ - **F8 - Scroll Down**: Scorre verso il basso nella schermata corrente.
+ - **F9**: ripete l'ultimo comando.
+ - **F10 - Display/Hide Menu**: Mostra o nasconde il menu principale nella schermata corrente.
+ - **F12 - Cancel**: Annulla l'operazione corrente o torna alla schermata precedente.
+
+ - 3: copia
 
 ## GO
 Il comando ```GO``` è utilizzato per accedere a un menu o una sottosistema di comandi di opzioni e comandi specifici che puoi eseguire.
- - ```GO``` - menù principale del sistema
+ - ```GO``` - selezione menù
  - ```GO MENU``` - menù personale
  - ```GO PROGRAM``` - menù per la gestione dei programmi
  - ```GO MAIN``` - menu principale standard del sistema
 
-## WRKOBJ
-Un oggetto è qualsiasi elemento del sistema che può essere creato, gestito o utilizzato.
+## Gli oggetti: WRKOBJ
+Un oggetto su AS/400 è qualsiasi elemento del sistema che può essere creato, gestito o utilizzato.
 Gli OBJ sono per esempio file, programmi, librerie e altre risorse, memorizzati permanentemente su disco:
  - Libreria (```*LIB```. Nota: le librerie non possono contenere altre librerie)
  - File (```*FILE```)
@@ -50,29 +56,45 @@ Gli OBJ sono per esempio file, programmi, librerie e altre risorse, memorizzati 
  - Area dati (```*DTAARA```)
  - Coda di output (```*OUTQ```)
 
+Ogni oggetto è identificato da 3 oggetti di max 10 caratteri:
+ - nome
+ - topo
+ - posizione
+
+```WRKOBJ``` + F4 - menu per inserire parametri del comando senza bisogno di conoscerli a memoria (nome, libreria e tipo). 
+
 ```BASH
-WRKOBJ OBJ(oggetto/libreria) OBJTYPE(*tipo)
+WRKOBJ OBJ(libreria/oggetto) OBJTYPE(*tipo)
 ```
  - ```OBJ``` - nome dell'oggetto che vuoi cercare. * per cercare con un certo pattern.
  - ```OBJTYPE``` - il tipo di oggetto (ad esempio, ```*PGM``` per programmi, ```*FILE``` per file, ```*LIB``` per librerie, etc.).
 
-```WRKJOB``` + F4 - menu per inserire parametri del comando senza bisogno di conoscerli a memoria (nome, libreria e tipo). 
+WRKOBJ GIULIOS mosta gli obj del profilo.
+*QUSRSYS tipo libreria
+LIBL sta per library list
 
 ## I Jobs
-I jobs su IBM i (AS/400) sono processi o attività che il sistema esegue.
+I **job** (o task) su IBMi (AS/400) sono processi (unità minima di elaborazione) o attività che il sistema esegue.
 Ci sono diversi tipi:
- - Job interattivi (iniziano con ```INTER```. Richiedono l'interazione dell'utente. Per esempio il login di un utente)
- - Job batch ( per operazioni programmate o lunghe. Lanciati dalla Job Queue)
- - Job di sistema (iniziano con ```Q```. Per esempio ```QINTER``` è un sottosistema che gestisce job interattivi)
- - Job di comunicazione (trasferimento dati (come FTP o SNA))
- - Job di spool (stampanti o altri dispositivi di output)
+ - **Job interattivi** (iniziano con ```INTER```. Richiedono l'interazione dell'utente. Per esempio il login di un utente)
+ - **Job batch** (per operazioni programmate o lunghe. Lanciati dalla Job Queue. Se eseguo un programma video nel sottosistema batch, darà errore)
+   - ```Qbatch``` (```batch```=lotto. Ripete in loop un certo numero di operazioni costanti in cui non è necessario un operatore). 
+ - **Job di sistema** (iniziano con ```Q```)
+   - ```QINTER``` è un sottosistema che gestisce job interattivi con altri utenti, quindi 'compila' la richiesta
+ - **Job di comunicazione** (trasferimento dati (come FTP o SNA))
+ - **Job di spool** (stampanti o altri dispositivi di output)
+
+```WRKACTJOB``` mostra i sottosistemi
+ - Stato ```MSGW``` vuol dire che è in attesa di messaggio
 
 Componenti di un Job:
  - Job Name
- - Job Number (Numero univoco assegnato automaticamente dal sistema)
+ - Job Number (Numero univoco assegnato automaticamente dal sistema. Progressivo che poi riparte dall'inizio)
  - User (utente che ha avviato il job o sotto il quale è eseguito)
  - Job Queue (in che ordine e quando sarà eseguito (soprattutto per i job batch)).
  - Job Description (percorsi del file, le librerie da usare e altre risorse).
+
+```signoff``` - serve per deloggarsi da terminale e termina i lavori
 
 Diversi stati del job:
  - ```ACTIVE```
@@ -82,4 +104,73 @@ Diversi stati del job:
  - ```ENDED``` (terminato manualmente o automaticamente)
 
 ```DSPJOB```: È principalmente per visualizzare informazioni dettagliate su un job. È un comando di sola lettura che fornisce una panoramica dettagliata del job.
-```WRKJOB```, al contrario di DSPJOB (per visualizzare informazioni dettagliate su un job), è utilizzato per gestire i job: visualizzare un elenco di job, eseguire operazioni, e gestirli.
+```WRKJOB``` (visualizzazione del lavoro), al contrario di DSPJOB (per visualizzare informazioni dettagliate su un job), è utilizzato per gestire i job: visualizzare un elenco di job, eseguire operazioni, e gestirli.
+
+## spool
+Spool è la stampa.
+```wrksplf```
+
+## lista delle librerie
+Una libreria è un oggetto che contiene altri oggetti, ma non altre librerie.
+
+La lista delle librerie il path che il sistema utilizza per ricercare gli oggetti.
+Il comando ```DSPLIB``` mostra le librerie.
+La lista delle librerie è locale ad ogni utente ed è organizzata su 3 livelli:
+ - lista delle librerie di sistema (```QSYS```, ```QCMD```, etc.)
+ - lista corrente (```CUR```, corrente, è la prima delle librerie. Potrebbe tranquillamente non esistere. Viene usato per buttare altre librerie di scarto)
+ - lista delle librerie utente
+
+```EDTLIBL``` - per modificare l'elenco delle librerie. I numeri sono di 10 in 10 per spostarle nell'elenco.
+Per togliere una libreria dall'elenco basta cancellarne il testo.
+Sullo 0 si aggiungono librerie.
+ - ```QTEMP```: temporanea
+ - ```QGPL```: (general purpose library) usato per copiare alcune informazioni che potrebbero venir eliminate
+
+Il formato dei caratteri usato è la BCD (Binary-Coded Decimal): ogni cifra decimale viene convertita singolarmente nel suo equivalente binario a 4 bit.
+
+```ADDLIBLE (libl entry)``` - per aggiungere una libreria all'elenco delle librerie
+```BASH
+ADDLIBLE LIB(TESTLIB) POS(*AFTER)
+```
+```RMVLIBLE``` - rimuove la libreria
+
+CTRL+INVIO = uscita campo
+
+```DSPJPBLOG``` + F10 + shift F6: vedere il log.
+
+## librerie
+Le liste delle librerie non si aggiornano automaticamente
+```CRTLIB (Create Library)``` crea una nuova libreria.
+```DLTLIB``` rimuove una libreria
+
+## PDM
+I membri della libreria:
+ - Programma di sviluppo ```GO PROGRAM``` + 2  o  ```strpdm``` (start+pdm)
+ - ```CRTSRCPF FILE(utente/file)``` Creazione file sorgenti.
+ - creiamo il file ```QPFSRC``` e ```QCLSRC``` (control language)
+ - F5 -> aggiorna
+
+Il **PDM (Program Development Manager)** è uno strumento utilizzato principalmente per gestire e modificare file sorgente, oggetti di librerie e processi di compilazione.
+
+Il **SEU (Source Entry Utility)** è un componente del PDM, e costituisce un editor di testo per il codice sorgente.
+
+ - ```I``` nuova riga (posso mettere un numero per dire quante righe)
+ - ```C``` copy
+   - ```CC``` copia un gruppo
+   - ```a``` (after) per incollare dopo
+   - ```b``` (before) per incollare prima
+ - ```D``` delete
+ - ```M``` move
+
+su SEU (F10) se metto:
+ - ```SAVE``` salva
+ - ```F```+nome o nome+F16 cerca
+ - ```C```+nomeprec+nomenuovo change 
+   - ```C```+nomeprec+nomenuovo ```ALL``` cambia tutti 
+```F5``` sblocca
+
+```COBOL
+XX
+  XX   
+```
+Nasconde il testo e ```SF99``` e ```SL99``` fanno vedere il testo. ```F5``` fa rivedere tutto.
