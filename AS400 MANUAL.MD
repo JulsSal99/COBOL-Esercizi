@@ -282,10 +282,14 @@ In testa e in coda al file sorgente
 Il dizionario è un oggetto privo di membri
 E' nel ```QPFSRC```
 REF(DIZIONARIO) - sotto unique
+
+Per riferirsi a un dizionario:
 ```COBOL
+               REF(DIZIONARIO)
 FILEDAT1  R    REFFLD(ALFABE010)
 ```
-(Ref-field)
+REFFLD (Ref-field) indica un campo nel dizionario. 
+
 ```crtpf``` membro su ```*none```
 
 ```edtlibl``` bisogna mettere in testa la libreria (GIULIOS)
@@ -297,16 +301,18 @@ ocssy401
 INCV
  - modulo intermediari
  - divisione successiva
- - F è un file fisico. Maschera video V, etc.
+ - F è un file fisico. V è Maschera video, etc.
  - NUM = numeratori (cosa contiene)
 
-Denominazioni:
- - NOME File: ```FOcnFxxx```
+### Denominazioni
+ - NOME File fisico: ```FOcnFxxx```
  - RECORD: ```FOcnxxxREC```
  - CAMPO/colonna: ```FOcnxxxaaa``` 
    - aaa è il nome del campo
  - ALIAS: ```FOcnxxx_CODICE```
+ - NOME File logico: ```FOcnFxxxXn``` 
 
+## importare record da altri file
 Per importare un record da un altro file, posso usare il comando ```FORMAT```:
 ```COBOL
                   UNIQUE
@@ -340,11 +346,9 @@ FORMAT
  - controllo livello form record:  ```*no```
 
 Devo cancellare le viste logiche per cancellare il file
-```DSPDBR``` (Display database relations)
+```DSPDBR``` (Display database relations) 
 
-```FOcnFxxxXn```
-
-CV confronta membri
+```CV``` confronta membri
 
 ## SQL
 ```strsql``` + F4
