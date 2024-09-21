@@ -26,13 +26,13 @@ Molti comandi utilizzano acronimi che seguono una struttura ben definita per ese
 l'asterisco viene usato per specificare un valore speciale o una scelta predefinita: ```*ALL```, ```*NONE```, ```*CURRENT``` (contesto corrente o l'utente corrente), ```*SYSVAL```. 
 
 ## I tasti funzione
- - F1 - Help: Mostra la guida in linea per la schermata corrente o il comando che stai utilizzando. Se il cursore si trova su una sezione dello schermo, mostra una una descrizione della porzione di testo. 
- - F2 - Change: Permette di modificare le informazioni nella schermata corrente.
- - F3 - Exit: Esce dalla schermata corrente o annulla l'operazione in corso.
- - F4 - Prompt: Mostra i parametri di input per il comando corrente, consentendo di inserire i valori richiesti.
- - F5 - Refresh: Ricarica la schermata corrente, utile per aggiornare le informazioni visualizzate.
- - F6 - Create: Permette di creare nuovi oggetti, come file, librerie, ecc.
- - F7 - Scroll Up: Scorre verso l'alto nella schermata corrente.
+ - **F1 - Help**: Mostra la guida in linea per la schermata corrente o il comando che stai utilizzando. Se il cursore si trova su una sezione dello schermo, mostra una una descrizione della porzione di testo. 
+ - **F2 - Change**: Permette di modificare le informazioni nella schermata corrente.
+ - **F3 - Exit**: Esce dalla schermata corrente o annulla l'operazione in corso.
+ - **F4 - Prompt**: Mostra i parametri di input per il comando corrente, consentendo di inserire i valori richiesti.
+ - **F5 - Refresh**: Ricarica la schermata corrente, utile per aggiornare le informazioni visualizzate.
+ - **F6 - Create**: Permette di creare nuovi oggetti, come file, librerie, ecc.
+ - **F7 - Scroll Up**: Scorre verso l'alto nella schermata corrente.
  - **F8 - Scroll Down**: Scorre verso il basso nella schermata corrente.
  - **F9**: ripete l'ultimo comando.
  - **F10 - Display/Hide Menu**: Mostra o nasconde il menu principale nella schermata corrente.
@@ -106,10 +106,6 @@ Diversi stati del job:
 ```DSPJOB```: È principalmente per visualizzare informazioni dettagliate su un job. È un comando di sola lettura che fornisce una panoramica dettagliata del job.
 ```WRKJOB``` (visualizzazione del lavoro), al contrario di DSPJOB (per visualizzare informazioni dettagliate su un job), è utilizzato per gestire i job: visualizzare un elenco di job, eseguire operazioni, e gestirli.
 
-## spool
-Spool è la stampa.
-```wrksplf```
-
 ## lista delle librerie
 Una libreria è un oggetto che contiene altri oggetti, ma non altre librerie.
 
@@ -143,6 +139,23 @@ Le liste delle librerie non si aggiornano automaticamente
 ```CRTLIB (Create Library)``` crea una nuova libreria.
 ```DLTLIB``` rimuove una libreria
 
+## Gli oggetti
+Fra i file fisici di tipo SRC (PF-SRC) compariranno sempre questi 4 file:
+ - ```QPFSRC```, contiene i sorgenti dei file fisici, ovvero la struttura dei file.
+ - ```QLBLSRC```, contiene i sorgenti che serviranno per creare i programmi Cobol.
+ - ```QCLSRC```, contiene i sorgenti che serviranno per creare programmi di tipo CLP. 
+ - ```QDDSSRC```, contiene i sorgenti che serviranno per creare le maschere video (DSPF) e i PRTF (file di stampa). 
+
+gli oggetti:
+ - ```PGM``` sono COBOL CMP
+ - ```*FILE```
+   - ```DF``` - DISPLAY FILE (Maschere video)
+     - in ```QDDSSRC```
+   - ```PF``` - PRINTER FILE 
+     - in ```QPFSRC```
+   - ```PF``` - PHYSICAL FILE
+   - ```LF``` - LOGICAL FILE
+
 ## PDM
 I membri della libreria:
  - Programma di sviluppo ```GO PROGRAM``` + 2  o  ```strpdm``` (start+pdm)
@@ -154,23 +167,193 @@ Il **PDM (Program Development Manager)** è uno strumento utilizzato principalme
 
 Il **SEU (Source Entry Utility)** è un componente del PDM, e costituisce un editor di testo per il codice sorgente.
 
- - ```I``` nuova riga (posso mettere un numero per dire quante righe)
+Se digito a sinistra il numero, vado alla riga interessata
+
+ - ```I``` + INVIO + testo -> nuova riga (posso mettere un numero per dire quante righe)
  - ```C``` copy
    - ```CC``` copia un gruppo
-   - ```a``` (after) per incollare dopo
+   - ```a``` (after) per incollare dopo (non deve essere ad inizio)
    - ```b``` (before) per incollare prima
  - ```D``` delete
  - ```M``` move
+   - ```a``` (after) per incollare dopo
+   - ```b``` (before) per incollare prima
 
 su SEU (F10) se metto:
  - ```SAVE``` salva
  - ```F```+nome o nome+F16 cerca
+   - si può usare anche SHIFT+F4
  - ```C```+nomeprec+nomenuovo change 
    - ```C```+nomeprec+nomenuovo ```ALL``` cambia tutti 
-```F5``` sblocca
+     - ```C``` nprec nnuovo ```a``` 
+ - ```rp``` repeat: ripete la riga
+
+Shortcuts:
+ - ```F5``` ricarica
+ - SHIFT+F8 date di modifica.
+ - SHIFT+F2 apri secondo file
 
 ```COBOL
 XX
   XX   
 ```
 Nasconde il testo e ```SF99``` e ```SL99``` fanno vedere il testo. ```F5``` fa rivedere tutto.
+
+ - Procedura: tipo di finanziamento
+ - Area: Formazione
+ - Archivio: Utenti
+
+*--- commento (non deve essere chiuso)
+
+OCSSY401 librerie di OCS
+
+I primi 6 spazi sono commenti
+
+```COBOL
+COMMEN          R FILEREC
+                  FILEDAT1      10A         ALIAS(FILE_DATO_1)
+                                            TEXT('DATO 1')
+                                            COLHDG('DATO 1')
+                K FILEDAT1
+```
+
+```A      R FILEREC```: 
+- R va nella colonna 17 
+- FILEREC è massimo 10
+
+Ci sono 3 campi obligatori:
+ - nome
+ - la natura del campo: 
+   - ```10A``` dice 10 campi alfanumerici (Maiuscolo è diverso dal minuscolo)
+   - ```10S``` 10 numerici. L'ultimo bite aggiuntivo è il segno
+   - ```5S 2``` lungo 5 con 2 decimali
+
+3 facoltativi:
+ - ALIAS: un identificativo più lungo di 10 caratteri. Non va usato lo spazio, ma l'```_```.
+ - TEXT: descrizione
+ - COLHDG: descrizione
+
+K archivio chiave ordinato dal campo chiave FILEDAT1
+
+```crtpf``` + F4 -> creazione file fisico (CRTPF).
+F10 apre impostazioni avanzate
+ - oggetto nome (sorgente/membro e oggetto devono avere nomi uguali)
+ - in che libreria (```GIULIOS```)
+ - file origine è la cartella (```QPFSRC```)
+ - in membro origine *FILE si riferisce al nome file
+ - numero massimo di membri:       ```*nomax```
+ - numero iniziale record:         ```*nomax```
+ - tempo massimo di attesa record: ```*nomax```
+ - controllo livello form record:  ```*no```
+ - riutilizzo record cancellati: ```*YES```
+
+OCSY401 è una libreria dove ci stanno file cobol e sorgenti
+
+```DSPOBJD``` : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
+ - oggetto: FILE1
+ - tipo oggetto: *FILE
+ - Tasto 8.
+
+Per consultare il contenuto di un archivio:
+- ```upddta```
+  - f10 immissione
+  - col tasto PAG si scorre un file
+  - SHIFT+F11 -> elimina un campo
+- ```wrkf``` per visualizzare un file.
+
+## spool
+Spool è la stampa.
+```wrksplf```
+```SP``` sul file porta allo spool
+```WRKSPLF SELECT(GIULIOS)```
+ - Controllo: B -> va alla fine
+
+Anche gli archivi fisici con una chiave hanno un sorgente nella SPFRC
+
+In bianco è dato chiave che decide l'ordine (se è letterale è ordinato per numero)
+
+```dspobjd```
+
+### Archivio a chiave unica
+UNIQUE
+In testa e in coda al file sorgente
+
+### dizionario
+Il dizionario è un oggetto privo di membri
+E' nel ```QPFSRC```
+REF(DIZIONARIO) - sotto unique
+```COBOL
+FILEDAT1  R    REFFLD(ALFABE010)
+```
+(Ref-field)
+```crtpf``` membro su ```*none```
+
+```edtlibl``` bisogna mettere in testa la libreria (GIULIOS)
+
+Membro se desiderato su ```*FILE``` in tutti gli altri casi
+
+ocssy401
+
+INCV
+ - modulo intermediari
+ - divisione successiva
+ - F è un file fisico. Maschera video V, etc.
+ - NUM = numeratori (cosa contiene)
+
+Denominazioni:
+ - NOME File: ```FOcnFxxx```
+ - RECORD: ```FOcnxxxREC```
+ - CAMPO/colonna: ```FOcnxxxaaa``` 
+   - aaa è il nome del campo
+ - ALIAS: ```FOcnxxx_CODICE```
+
+Per importare un record da un altro file, posso usare il comando ```FORMAT```:
+```COBOL
+                  UNIQUE
+R NUOVO_RECORD    FORMAT(NOME_FILE_ORIGINE)
+K CAMPO_1
+K CAMPO_2
+```
+NUOVO_RECORD stesso nome di record nel file di origine
+
+
+## Viste logiche (LF)
+Permette di avere viste diverse di un file. Crea una sorta di puntatori a righe specifiche di codice che soddisfano determinate condizioni.
+```COBOL
+     A                                      UNIQUE
+     A          R NUOVO_RECORD              PFILE(NOME_FILE_ORIGINE)
+     A          K CAMPO_1
+     A          K CAMPO_2
+     A          S CAMPO_1                   COMP(NE 0)
+```
+Se metto ```UNIQUE``` nella vista logica, si riflette nel file.
+FORMAT
+```COMP``` (compare) dice una condizione che dice NOT EQUAL 0. Invece che ```S``` si può usare ```O``` (omit)
+ - ```GT```: > 
+ - ```LS```: <
+ - ```LE```: <=
+ - ```GE```: >=
+
+```crtlf``` (o numero ```14```) 
+ - numero massimo di membri:       ```*nomax```
+ - tempo massimo di attesa record: ```*nomax```
+ - controllo livello form record:  ```*no```
+
+Devo cancellare le viste logiche per cancellare il file
+```DSPDBR``` (Display database relations)
+
+```FOcnFxxxXn```
+
+CV confronta membri
+
+## SQL
+```strsql``` + F4
+QPFSRC (sorgenti)
+
+Gli importi vanno in centesimo di euro.
+
+SELECT Nome CONCAT ' ' CONCAT Cognome FROM Tabella
+
+WHERE Value IN (1, 3, 5)
+
+BETWEEB 1 AND 2
