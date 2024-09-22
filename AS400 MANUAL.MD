@@ -202,21 +202,26 @@ Nasconde il testo e ```SF99``` e ```SL99``` fanno vedere il testo. ```F5``` fa r
 ## DDS
 I **DDS (Data Description Specifications)** sono un tipo di codice viene utilizzato per definire file fisici, file logici e altri oggetti di database sull'AS/400.
 
- - Procedura: tipo di finanziamento
- - Area: Formazione
- - Archivio: Utenti
-
 ```COBOL
 ----.----1----.----2----.----3----A----4----.----
+        *-----------------------------------------------*
+        *---Procedura - Modulo base                  ---*
+        *---Area      - Formazione                   ---*
+        *---Archivio  - Archivio sequenziale         ---*
+        *-----------------------------------------------*
 COMME                                       UNIQUE
      A          R FILEREC
      A            FILEDAT1      10A         ALIAS(FILE_DATO_1)
      A                                      TEXT('DATO 1')
      A                                      COLHDG('DATO 1')
      A          K FILEDAT1
-*--- commento (non deve essere chiuso)
 ```
+Un commento viene dichiarato con ```*---``` e non deve essere necessariamente chiuso.
+ - Procedura: l’argomento della release. Serve per distinguere se verrà utilizzata o meno da ogni cliente in base ai moduli acquistati (eg. tipo di finanziamento);
+ - Area: contesto;
+ - Archivio: Tipo di file
 
+Il codice:
 - I primi 5 spazi dopo il numero della riga è uno spazio per i commenti
 - ```UNIQUE``` (colonna 45) indica che un archivio è a chiave unica
 - ```A``` (colonna 6) indica che quella riga è attiva e verrà elaborata dal sistema.
@@ -240,7 +245,7 @@ F10 apre impostazioni avanzate
  - oggetto nome (sorgente/membro e oggetto devono avere nomi uguali)
  - in che libreria (```GIULIOS```)
  - file origine è la cartella (```QPFSRC```)
- - in membro origine *FILE si riferisce al nome file
+ - in membro origine ```*FILE``` si riferisce al nome file
  - numero massimo di membri:       ```*nomax```
  - numero iniziale record:         ```*nomax```
  - tempo massimo di attesa record: ```*nomax```
@@ -258,12 +263,12 @@ Per consultare il contenuto di un archivio:
 
 In **bianco** è indicato un dato chiave che decide l'ordine (se è letterale è ordinato per numero)
 
+Anche gli archivi fisici con una chiave hanno un sorgente nella ```SPFSRC```
+
 ## spool
 Spool è la stampa.
 ```wrksplf``` / ```WRKSPLF SELECT(GIULIOS)```
 ```SP``` sul file porta allo spool
-
-Anche gli archivi fisici con una chiave hanno un sorgente nella SPFSRC
 
 ## Dizionario
 Il dizionario è un oggetto privo di membri ed è sempre nel ```QPFSRC```.
@@ -292,10 +297,9 @@ Per riferirsi a un dizionario:
 
 Membro se desiderato su ```*FILE``` in tutti gli altri casi
 
-```DSPOBJD``` (Display Object Descriptions) : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
+```DSPOBJD``` (Display Object Descriptions, Tasto 8) : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
  - oggetto: ```FILE1```
  - tipo oggetto: ```*FILE```
- - Tasto 8.
 
 ## Denominazioni
  - NOME File fisico: ```FOcnFxxx```
