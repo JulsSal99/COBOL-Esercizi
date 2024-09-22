@@ -199,23 +199,27 @@ XX
 ```
 Nasconde il testo e ```SF99``` e ```SL99``` fanno vedere il testo. ```F5``` fa rivedere tutto.
 
+## DDS
+I **DDS (Data Description Specifications)** sono un tipo di codice viene utilizzato per definire file fisici, file logici e altri oggetti di database sull'AS/400.
+
  - Procedura: tipo di finanziamento
  - Area: Formazione
  - Archivio: Utenti
 
-*--- commento (non deve essere chiuso)
-
-OCSSY401 librerie di OCS
-
-I primi 6 spazi sono commenti
-
 ```COBOL
+      0----.----1----.----2----.----3
+                                            UNIQUE
 COMMEN          R FILEREC
                   FILEDAT1      10A         ALIAS(FILE_DATO_1)
                                             TEXT('DATO 1')
                                             COLHDG('DATO 1')
                 K FILEDAT1
+*--- commento (non deve essere chiuso)
 ```
+
+I primi 6 spazi dopo il numero della riga è uno spazio per i commenti
+
+```UNIQUE``` indica che un archivio è a chiave unica
 
 ```A      R FILEREC```: 
 - R va nella colonna 17 
@@ -247,12 +251,7 @@ F10 apre impostazioni avanzate
  - controllo livello form record:  ```*no```
  - riutilizzo record cancellati: ```*YES```
 
-OCSY401 è una libreria dove ci stanno file cobol e sorgenti
-
-```DSPOBJD``` : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
- - oggetto: FILE1
- - tipo oggetto: *FILE
- - Tasto 8.
+**OCSSY401** è una libreria dove ci stanno file cobol e sorgenti
 
 Per consultare il contenuto di un archivio:
 - ```upddta```
@@ -261,34 +260,35 @@ Per consultare il contenuto di un archivio:
   - SHIFT+F11 -> elimina un campo
 - ```wrkf``` per visualizzare un file.
 
+In **bianco** è indicato un dato chiave che decide l'ordine (se è letterale è ordinato per numero)
+
 ## spool
 Spool è la stampa.
-```wrksplf```
+```wrksplf``` / ```WRKSPLF SELECT(GIULIOS)```
 ```SP``` sul file porta allo spool
-```WRKSPLF SELECT(GIULIOS)```
- - Controllo: B -> va alla fine
 
-Anche gli archivi fisici con una chiave hanno un sorgente nella SPFRC
+Anche gli archivi fisici con una chiave hanno un sorgente nella SPFSRC
 
-In bianco è dato chiave che decide l'ordine (se è letterale è ordinato per numero)
-
-```dspobjd```
-
-### Archivio a chiave unica
-UNIQUE
-In testa e in coda al file sorgente
-
-### dizionario
-Il dizionario è un oggetto privo di membri
-E' nel ```QPFSRC```
-REF(DIZIONARIO) - sotto unique
+## Dizionario
+Il dizionario è un oggetto privo di membri ed è sempre nel ```QPFSRC```.
+Esempio:
+```COBOL
+      A          R DIZIONARIO
+      A            CAMPO_TIPO1    10A    COLHDG('Tipo 1')
+      A            CAMPO_TIPO2     5S 0  COLHDG('Tipo 2')
+                  *--- 5 CIFRE 0 decimali 
+      A            CAMPO_TIPO3    30A    COLHDG('Tipo 3')
+```
 
 Per riferirsi a un dizionario:
 ```COBOL
-               REF(DIZIONARIO)
-FILEDAT1  R    REFFLD(ALFABE010)
+      A                                 UNIQUE
+      A          R PRINCIPALE           REF(DIZIONARIO)
+      A            CAMPO1               REFFLD(CAMPO_TIPO1)
+      A          K CAMPO1
 ```
-REFFLD (Ref-field) indica un campo nel dizionario. 
+ - ```REFFLD``` (Ref-field) indica un campo nel dizionario. 
+ - ```REF(DIZIONARIO)``` - sotto unique
 
 ```crtpf``` membro su ```*none```
 
@@ -296,6 +296,19 @@ REFFLD (Ref-field) indica un campo nel dizionario.
 
 Membro se desiderato su ```*FILE``` in tutti gli altri casi
 
+```DSPOBJD``` (Display Object Descriptions) : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
+ - oggetto: FILE1
+ - tipo oggetto: *FILE
+ - Tasto 8.
+
+## Denominazioni
+ - NOME File fisico: ```FOcnFxxx```
+ - RECORD: ```FOcnxxxREC```
+ - CAMPO/colonna: ```FOcnxxxaaa``` 
+   - aaa è il nome del campo
+ - ALIAS: ```FOcnxxx_CODICE```
+ - NOME File logico: ```FOcnFxxxXn```
+ 
 ocssy401
 
 INCV
@@ -303,14 +316,6 @@ INCV
  - divisione successiva
  - F è un file fisico. V è Maschera video, etc.
  - NUM = numeratori (cosa contiene)
-
-### Denominazioni
- - NOME File fisico: ```FOcnFxxx```
- - RECORD: ```FOcnxxxREC```
- - CAMPO/colonna: ```FOcnxxxaaa``` 
-   - aaa è il nome del campo
- - ALIAS: ```FOcnxxx_CODICE```
- - NOME File logico: ```FOcnFxxxXn``` 
 
 ## importare record da altri file
 Per importare un record da un altro file, posso usare il comando ```FORMAT```:
@@ -352,12 +357,9 @@ Devo cancellare le viste logiche per cancellare il file
 
 ## SQL
 ```strsql``` + F4
-QPFSRC (sorgenti)
 
 Gli importi vanno in centesimo di euro.
 
-SELECT Nome CONCAT ' ' CONCAT Cognome FROM Tabella
-
-WHERE Value IN (1, 3, 5)
-
-BETWEEB 1 AND 2
+- ```SELECT Nome CONCAT ' ' CONCAT Cognome FROM Tabella WHERE Value IN (1, 3, 5)```
+- ```BETWEEN 1 AND 2```
+- ```SELECT UPPER(nome) AS nome_maiuscolo FROM clienti;```
