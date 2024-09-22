@@ -207,23 +207,21 @@ I **DDS (Data Description Specifications)** sono un tipo di codice viene utilizz
  - Archivio: Utenti
 
 ```COBOL
-      0----.----1----.----2----.----3
-                                            UNIQUE
-COMMEN          R FILEREC
-                  FILEDAT1      10A         ALIAS(FILE_DATO_1)
-                                            TEXT('DATO 1')
-                                            COLHDG('DATO 1')
-                K FILEDAT1
+----.----1----.----2----.----3----A----4----.----
+COMME                                       UNIQUE
+     A          R FILEREC
+     A            FILEDAT1      10A         ALIAS(FILE_DATO_1)
+     A                                      TEXT('DATO 1')
+     A                                      COLHDG('DATO 1')
+     A          K FILEDAT1
 *--- commento (non deve essere chiuso)
 ```
 
-I primi 6 spazi dopo il numero della riga è uno spazio per i commenti
-
-```UNIQUE``` indica che un archivio è a chiave unica
-
-```A      R FILEREC```: 
-- R va nella colonna 17 
-- FILEREC è massimo 10
+- I primi 5 spazi dopo il numero della riga è uno spazio per i commenti
+- ```UNIQUE``` (colonna 45) indica che un archivio è a chiave unica
+- ```A``` (colonna 6) indica che quella riga è attiva e verrà elaborata dal sistema.
+- ```R``` (colonna 17): segnala che la riga definisce  formato o nome (max 10) di record
+- ```K``` archivio chiave ordinato dal campo chiave FILEDAT1
 
 Ci sono 3 campi obligatori:
  - nome
@@ -233,11 +231,9 @@ Ci sono 3 campi obligatori:
    - ```5S 2``` lungo 5 con 2 decimali
 
 3 facoltativi:
- - ALIAS: un identificativo più lungo di 10 caratteri. Non va usato lo spazio, ma l'```_```.
- - TEXT: descrizione
- - COLHDG: descrizione
-
-K archivio chiave ordinato dal campo chiave FILEDAT1
+ - ```ALIAS```: un identificativo più lungo di 10 caratteri. Non va usato lo spazio, ma l'```_```.
+ - ```COLHDG```: descrizione che viene visualizzato in interfacce visuali
+ - ```TEXT```: descrizione, vale come un commento
 
 ```crtpf``` + F4 -> creazione file fisico (CRTPF).
 F10 apre impostazioni avanzate
@@ -297,8 +293,8 @@ Per riferirsi a un dizionario:
 Membro se desiderato su ```*FILE``` in tutti gli altri casi
 
 ```DSPOBJD``` (Display Object Descriptions) : Per sapere un oggetto a quale sorgente punta bisogna guardare ```File origine``` compilando:
- - oggetto: FILE1
- - tipo oggetto: *FILE
+ - oggetto: ```FILE1```
+ - tipo oggetto: ```*FILE```
  - Tasto 8.
 
 ## Denominazioni
@@ -314,7 +310,7 @@ ocssy401
 INCV
  - modulo intermediari
  - divisione successiva
- - F è un file fisico. V è Maschera video, etc.
+ - ```F``` è un file fisico. ```V``` è Maschera video, etc.
  - NUM = numeratori (cosa contiene)
 
 ## importare record da altri file
