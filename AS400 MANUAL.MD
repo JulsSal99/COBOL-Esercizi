@@ -249,8 +249,8 @@ F10 apre impostazioni avanzate
  - numero massimo di membri:       ```*nomax```
  - numero iniziale record:         ```*nomax```
  - tempo massimo di attesa record: ```*nomax```
- - controllo livello form record:  ```*no```
  - riutilizzo record cancellati: ```*YES```
+ - controllo livello form record:  ```*no```
 
 **OCSSY401** è una libreria dove ci stanno file cobol e sorgenti
 
@@ -266,9 +266,10 @@ In **bianco** è indicato un dato chiave che decide l'ordine (se è letterale è
 Anche gli archivi fisici con una chiave hanno un sorgente nella ```SPFSRC```
 
 ## spool
-Spool è la stampa.
-```wrksplf``` / ```WRKSPLF SELECT(GIULIOS)```
-```SP``` sul file porta allo spool
+Spool è la stampa di ogni procedura eseguita (Compilazione, etc.).
+```wrksplf``` / ```WRKSPLF SELECT(GIULIOS)``` / ```SP``` sul file porta allo spool.
+
+Gli errori dal 30 in su impediscono la compilazione del programma.
 
 ## Dizionario
 Il dizionario è un oggetto privo di membri ed è sempre nel ```QPFSRC```.
@@ -356,10 +357,762 @@ Devo cancellare le viste logiche per cancellare il file
 ```CV``` confronta membri
 
 ## SQL
-```strsql``` + F4
+```strsql``` (Start SQL) + F4
+
+F15 -> va a capo
 
 Gli importi vanno in centesimo di euro.
 
-- ```SELECT Nome CONCAT ' ' CONCAT Cognome FROM Tabella WHERE Value IN (1, 3, 5)```
+- ```SELECT RTRIM(Nome) CONCAT ' ' CONCAT Cognome FROM Tabella WHERE Value IN (1, 3, 5)```
 - ```BETWEEN 1 AND 2```
 - ```SELECT UPPER(nome) AS nome_maiuscolo FROM clienti;```
+- ```LIKE '%a'```
+
+### Funzioni
+  - ```AVG(campo)``` 
+  - ```SUM()``` 
+  - ```LENGTH()```
+  - ```SUBSTR(Valore, 3, 2)``` (parte da 1)
+  - ```LOWER()``` / ```UPPER()```
+  - ```ABS()```
+  - ```DIGITS``` / ```DEC()```
+    - Persona CONCAT Digits(Numero)
+  - ```REPLACE(Nome, 'IN', '01')```
+  - ```SIGN()```
+  - ```CAST(Nome AS CHAT(20))```
+  - ```CONCAT(CONCAT(Nome, ' '), Cognome)```
+  - ```WHERE Campio IS NULL``` / ```HAVING```
+```SQL
+CREATE FUNCTION
+  Iva(@prezzo DECIMAL(10, 2), @tasso DECIMAL(5,2))  
+  RETURNS DECIMAL(10,2) 
+AS 
+BEGIN
+  RETURN @prezzo * tasso / 100
+END;
+```
+```SQL
+SELECT dbo.Iva(100, 2)
+```
+
+### Subquery
+```SQL
+  WHERE EXISTS
+```
+
+### Inner JOIN
+```SQL
+  SELECT * FROM GUALTIERO/LIBRI1 JOIN GUALTIERO/LIBRI2 ON LIBRI1.FOAM_LIBRO = LiBRI2.FOAM_LIBRO
+```
+
+ - LEFT JOIN: fa vedere tutti quelli nel file di sinistra
+
+### Creare tabelle
+```SQL
+CREATE TABLE Lib/Nome
+(CAMPO1 CHAR(19),
+CAMPO2 NUMERIC(3)
+CAMPO3 NUMERIC(5))
+```
+
+```SQL
+DROP TABLE QTEMP/FILE1
+```
+Crea un campo FISSO
+```SQL
+SELECT 'FISSO' AS FISSO FROM GUALTIERO/LIBRIQ
+```
+```SQL
+CREATE TABLE QTEMP/LIBRIW AS (SELECT * FROM GUALTIERO/LIBRI1) WITH NO DATA
+```
+```SQL
+CREATE TABLE QTEMP/LIBRIW LIKE GUALTIERO/LIBRI1
+```
+```SQL
+INSERT INTO QTEMP/LIBRIQ 
+VALUES(8, 'KING', 'STEPHEN', 'THE STAND', 'FISSO lUNGO')
+```
+```SQL
+INSERT INTO QTEMP/LIBRIQ (SELECT [...])
+```
+```SQL
+UPDATE INTO QTEMP/LIBRIQ  SET FISSO = 'FISSO3' WHERE NOME = 'PLUTO'
+```
+```SQL
+DELETE FROM QTEMP/LIBRIQ WHERE FISSO = 'FISS4'
+```
+
+Come creo senza usare LIKE?
+
+
+## COBOL
+Il COBOL è in ```QLBLSRC```
+
+```01 <alias nome-file>-REC```
+
+Con ```COPY DDS-ALL-FORMATS``` verrà esattamente copiata la struttura del FILE1:
+```COBOL
+DATA DIVISION.
+FILE SECTION.
+FD FILE1.
+01 FILE1-REC.   COPY DDS-ALL-FORMATS OF FILE1.
+```
+
+L’utilizzo di DD-ALL-FORMATS implica che i nomi utilizzati nel programma saranno gli ALIAS del file, mentre l’utilizzo di DDS-ALL-FORMATS è preferito e implica che i nomi utilizzati nel programma saranno i nomi short.
+
+```
+B01-INPUT.
+  OPEN INPUT FILE1.
+
+  INITIALIZE FILEREC.
+B01-READ.
+  READ FILE1 NEXT
+    AT END
+      GO TO B01-CONTINUA
+  END-READ.
+
+  GO TO B01-READ.
+
+B01-CONTINUA.
+  CLOSE FILE1.
+
+B01-EX.
+  EXIT.
+```
+
+```COBOL
+D01-IO.
+  OPEN I-0 FILE1.
+
+INITIALIZE FILEREC.
+  D01-READ.
+    READ FILE1 NEXT
+  AT END
+    GO TO D01-CONTINUA
+  END-READ.
+
+  MOVE 1      TO FILE-DATO-2.
+  REWRITE FILE1-REC.
+
+  GO TO D01-READ.
+
+D01-CONTINUA.
+  CLOSE FILE1.
+
+D01-EX.
+  EXIT.
+```
+
+COSTO
+
+QCLBLSRC
+QBLSRC le copie personali
+
+B01-PRELIMINARI.
+  CALL 'OTTSPLDA' USING LDA-REC BY CONTENT ' '.
+  OPEN I-O VIDEO.
+
+```RCLSRC``` (Reclear Resource) Spesso aggancia i test all'oggetto precedente.
+
+La copy cobol ```OXDBYREF``` è una copy cobol dizionario in quanto contiene le variabili più comuni e più utilizzate nel sistema OCS e quindi dichiarata in moltissimi programmi.
+È l’equivalente di ```OCSDBREF``` per i file.
+
+I test vanno fatti in ```WORKOCS``` o ```DEMOOCS```
+
+```CC``` COMPILA
+```CR``` TESTA 
+
+```WRKOCS```
+
+```QDDSSRC``` di tipo dspf di tipo *FILE
+
+ASSUME (di tipo RECORD) permette 
+- opzione 8 
+  - dimensione della finestra
+  - riga corrente: parte da riga 3
+  - posizione corrente: parte da colonna 7
+  - righe finestra (MAX 20, DEFAULT 4)
+  - posizione finestra: (MAX 74) larghezza di 64
+- opzione 12 si edita
+
+E' composta da:
+ - eichetta: ```'Campo 1'```
+ - variabile: ```+B(10)```
+   - alfanumerici: ```
+     - ```B``` editabile
+     - ```O``` non editabile
+   - numerico
+     - ```9``` editabile
+     - ```6``` non editabile
+
+Non bisogna mischiare variabili di Input e di Input-Output, ma bisogna metterli su protetti.
+
+f10
+
+editing campi
+- ```-``` sposta
+- ```==``` per copiarlo
+- ```d``` cancellare
+- ```ac```
+- SHIFT+F8 per evidenziare i campi
+- ```?``` da info sul campo
+- ```*``` 
+  - ```attributi di visualizzazione```: 
+
+Nel login:
+```WORKOCS```
+```WORKOCS0```
+
+gestione controparti:
+ - campi
+   - alta intensità il campo è bianco
+   - l'inversione di fondo si attiva quando si scatena qualche condizione
+ - Y SI imposta per l'attributo
+ - l'indicatore ha valore numerico a due cifre (```01```-```99```)
+   - ```+``` invio
+   - stessa riga: ```AND```
+   - opposta: ```OR``` 
+
+```F6``` + ```Y``` per testare
+
+F4 F6 per riordinare i campi
+
+F20 (SHIFT+F8) accende le etichette
+
+
+Quando c'è un errore si disattiva il sottolineato
+
+Per compilare: ```CRTDSPF``` crea le maschere, ma non si usa. Si usa ```CC```
+
+```CHGDSPF``` + F4 -> modifica file video
+
+```CALL``` è per testare
+
+```COBOL
+  SELECT VIDEO    ASSIGN
+
+
+```
+
+```CPINTDCM1```FM
+
+in parole chiave comuni
+posso dichiarare l'alias.
+
+FMST_ERRORE
+
+INIZIALIZE: preparo la schermata pulita. COsa fa se WRITE la pulisce?
+
+```COBOL
+IF W-FUNKEY = 7
+  GO TO A01-FINE
+END-IF.
+```
+GLi dice che se qualcuno preme F7, questo deve fare.
+
+```COBOL
+PERFORM Nome_funzione THRU Posizione_finale_funzione
+```
+
+CPINTTCA
+CPINTTCAFM
+
+sui campi variabili i valori dall'1 al 60
+80-999 sui tasti funzionali.
+
+'I' Immissione
+'SPACE' inserimento
+
+```COBOL
+CALL 'SYCNFC' using 
+    BY CONTENT '0024'
+    BY REFERENCE  LKMSG-PAR
+                  LKMSG-MSG
+MOVE LKMSG-MSG                TO FMST-ERRORE
+```
+
+```CALL SYFILSTA```
+
+```rcmsg``` -> per vedere i messaggi di errore (eg. ```0548```: nome e cognome obbligatorio)
+
+```8``` e ```5``` dettagli sul compilato
+
+```COBOL
+  WORKING STORAGE SECTION
+  COPY OXDBYREF. *--- copia il dizionario di OCS
+    01 LDA-REC.          COPY CTLDA (local data area) *--- contiene informazione di sistema
+  COPY CTANALOCRT. 
+  OTSSPLDA 
+```
+
+in WORKOCS
+DSPDTAARA *LDA mostra le info di LDA
+
+```WK-``` identificano variabili d'appoggio
+
+COMP-3. la metà +1
+
+```COBOL
+SW-TESTATA      PIC(9)
+  SI-TESTATA    VALUE 1
+  NO-TESTATA    VALUE 0
+``` 
+
+```wrkobj``` devo controllare l'ora
+```CR``` creo solo lo spool
+
+```RC``` per capire da cosa è chiamato (```COPY```) un programma
+
+ - ```DG``` per debuggare
+   - F1
+     - prendo i miei campi che interessano
+     - F A01 mi posiziono all'inizio del programma
+     - F10 edtlibl
+     - F6 do il punto iniziale
+     - F12 do l'ultimo punto
+     - con F10 vado avanti
+     - EVAL variabile = 'valore'
+     - F11
+   - ```enddbg``` per terminare il debug
+     - ```ENDSRVJOB```
+ - SHIFT+```F2``` per agganciare il file che voglio debuggare nel mio file. 
+   - ```F22``` (```SHIFT``` + F10) per debuggare l'altro programma chiamato
+
+### I messaggi di errore
+Gestione dei messaggi di errore
+```RCMSG``` per cercare un errore
+
+I messaggi di errore sono in ```QPFSRC/OCCSSY401``` ```OTTSFMSG```
+
+Il codice è un alfanumerico da 4 byte
+
+0263 è per mettere i vzlori ammessi in un campo variabile nel programma.
+
+I messaggi personalizzati sono in OTTSFMSG
+
+```COBOL
+MOVE 'T1/T2'              TO LKMSG-PAR
+CALL 'SYMSGCL' USING
+  BY CONTENT '1234'
+  BY REFERENCE  LKMSG-PAR
+                LKMSG-MSG
+MOVE LKMSG-MSG            TO FMD-ERRORE
+GO TO C01-VIDEO
+```
+Con la prima move dico che parametri stampare.
+```RC``` -> ```MSG0155``` : cerca 0155 di tipo *MSG
+
+Per i messaggi di warning ci usa la routine ```SYMSGWRN```.
+Richiede
+```COBOL 
+01 LK-CODICE      PIC X(4).
+01 LK-PARAMETRI.
+  03 LK-MODALITA        PIC X
+  03 LK-CONFERMA        PIC X
+  03 LK-STATUS          PIC XX
+  03 LK-PARAMETRO       PIC X(20).
+```
+
+Chiamata:
+```
+CALL 'SYMSGCL' USING
+  BY CONTENT '1234'
+  BY REFERENCE  LK-PARAMETRI
+```
+
+```QPFSRC/OCCSSY401``` ```SYNCHK```
+
+```PIC X OCCURS 20.``` -> crea un campo X e lo ripete. utile per il casting a numerico.
+
+```01 FMST-INTERM       PIC Z(9)```
+```COBOL
+MOVE FMST-INTERM
+CALL 'SYNCHK' USING
+```
+
+I FLAG SI/NO
+
+OCSDBREF
+
+
+Guarda il file ```FRANCESCAG/QLBLSRC```, ```CPPRVAOB```
+
+Da file a video: ```SYITNSNFV```
+
+
+### Gli importi
+DIchiarati a video come alfanumerici di 17.
+A file è un campo numerico di 13.
+```SYIMPFIVI```
+
+CALL SYIMPFIVI USING  WK-IMPORTO
+                      FMS-IMP-RAGG
+BY CONTENT LENGTH OF FMS-IMP-RAGG.
+
+SYIMPNORM
+
+### Le date
+
+Vengono salvate in formato lungo invertito: anno-mese-giorno
+
+SYDATK
+
+CTLDA per la data odierna
+
+SYDATFIST
+
+SYDATFIAL
+SYDATALFI
+SYDATS -> calcolo data da numero a stringa
+SYDATN -> 
+
+```DSPDTAARA *LDA``` in WORKOCS recuperi tutte le informazioni.
+
+### Modifica degli archivi
+ - ```CPYF```
+   - sostituzione aggiunta record
+     - F1
+   - F10
+     - controllo campi formato record: ```*NOCHK```
+       - Se ho un numerico che va in un alfanumerico, funziona. alfa a num non va
+     - ```*MAP``` 
+     - ```*DROP``` Quando alcuni campi non esistono in quello destinazione
+ - ```CHPF``` Fa una copia su se stesso e usa MAP e DROP.
+Copio un archivio in un'altro
+
+### Programmi di controllo
+```OXGAPTGAK``` - Controlla l'esistenza del record in un file
+
+``` INIZIALIZE OXGAPTGAK OF ```
+
+### Gli elenchi
+
+Subfile è l'elenco
+
+ESC -> ```16``` -> ```1```: per visualizzare o editare un campo
+
+Colonna:
+ - Attributo (H) -> alta intensità
+ - Dsf Display Format ->  specifico il formato
+   - DAT -> data
+   - IMP -> importo
+Key Return dice all'SQL che campo voglio restituire alla prossima schermata
+In tasti funzionali metto R per abilitare l'uso dell'invio. Se lo metto su L invece di F, funziona su quella specifica riga
+
+
+OTSQPVLISTI
+Libreria da dichiarare nella Working Storage Section: ```OTSQYVLIST```.
+
+```COBOL
+WORKING-STORAGE SECTION.
+OTSQYVLIST
+```
+
+F024FLIB 
+
+### I CL (Control Language)
+
+Serve per automatizzare operazioni che si devono ripetere con una certa frequenza.
+
+I programmi vengono testati in un ambiente separato (eg. ```WORKOCS```)
+I CL vengono raccolti in ```QCLSRC```
+Comando ```STRSEU```:
+ - Tipo: ```CLP```
+Lo script:
+```COBOL
+ ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+...
+             PGM
+             ADDLIBLE   LIB(GIULIOS)
+             MONMSG     MSGID(CPF2103) EXEC(GOTO CMDLBL(FINE))
+             CAL        PGM(FOAMLIB)
+/*           RMVLIBLE   LIB(GIULIOS)                              */
+ FINE:       ENDPGM
+```
+
+```COBOL
+             MONMSG     MSGID(CPF2103) EXEC(DO)
+                                         RMVLIBLE   LIB(GIULIOS) 
+                                         GOTO  CMDLBL(FINE) 
+                                       ENDDO
+```
+Con F4 si riordina il codice
+
+```MONMSG``` ignora l'errore ```CPF2103```
+Con FINE: si abbassa il livello di gravità per cui non ci sono variabili nel codice
+
+Nel dumb (o eccezione) 
+ - I ignore
+ - R retry
+SHIFT+ESC -> ```3``` 
+
+```EXEC``` dice che se si verifica l'eccezione, salta tutto
+
+```CPF0000``` ignora tutti i messaggi di quella famiglia
+
+#### le variabili in un CL
+DCL declare
+```COBOL
+ ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+...
+             PGM        PARM(&LIB &PGM)
+             DCL        VAR(&LIB) TYPE (*CHAR) LEN(10)
+             DCL        VAR(&PGM) TYPE (*CHAR) LEN(10)
+             DCL        VAR(&MSG1) TYPE (*CHAR) LEN(40) 
+             DCL        VAR(&MSG2) TYPE (*CHAR) LEN(40) 
+             DCL        VAR(&MSG3) TYPE (*CHAR) LEN(40)
+             DCL        VAR(&ERRORE) TYPE (*CHAR) LEN(30)  
+             CHGVAR     VAR(&ERRORE) VALUE('Dati di input errati!') 
+             IF         COND((&LIB *EQ ' ') *OR (&PGM = ' ')) THEN(DO)
+                            CHGVAR  VAR(&MSG2) VALUE(&ERRORE)
+                            CALL PGM(STOPMSG) PARM(&MSG1 &MSG2 &MSG3)
+                        ENDDO 
+             ELSE       CMD(DO)
+                        ADDLIBLE   LIB(&LIB)
+                        MONMSG     MSGID(CPF0000)
+                        CALL       PGM(&PGM)
+             ENDDO
+ FINE:       RCLSRC
+             ENDPGM
+```
+
+CALL GIULIOS/PROVAVAR ('GIULIOS' 'FOAMLIB')
+
+### Le stampe
+WORKOCS
+Se sono 80 colonne con massimo 198 sta in A4 
+1 -> *PDF
+
+SELECT STAMPA ASSIGN PRINTER-STAMPA80
+
+#### La testata
+Dopo 60 righe c'è il salto pagina
+
+WRITE ST-REC BEFORE ADVANCING.
+ST-REC è una riga vuota
+
+#### Le stampe esterne
+L'OVERLAY è la filigrana
+
+```COBOL
+WRITE STAMPA-REC FROM TESTATA-REC FORMAT 'DESC'
+  AT EOP
+    MOVE 'SI' TO                  TO WK-TESTATA
+```
+
+### Creazione di un printer file
+```CTRSEU``` in ```QDDSSRC``` di tipo ```PRTF```
+```19``` (RLU - Report Layout Utility) -> F4 -> ```larghezza: ``` ```80```
+ - ```DR```: define record
+ - F23
+   - SKIPA/SKIPB
+   - SPACEA/SPACEB 
+ - ```DC``` (Declare constant): creo un campo
+   - ```CF``` (Center Field): centra il campo
+
+```<...>```
+```-----```
+
+F13 F15
+F11 definizione campo
+
+SAVE mantiene una copia sul si
+
+GIOVANNIg
+
+INSERT?
+
+SHIFT-F11 proprietà
+
+SHIFT-F1 selezione multipla
+
+
+
+Perché INITIALIZE-REC lascia i campi sporchi invece che scrivere INITIALIZEREC?
+
+```wrkjob``` -> ```4``` per vedere le stampe 
+
+## versionamento e rilascio: le Release
+
+OCSDB401 serve per compilare i programmi direttamente dal cliente
+In WORKOCS numero 15
+
+La release va aperta quando si modifica una tabella, non un cobol.
+
+ZZnumero progressivo01
+
+Le release vanno aperte col 5
+```COBOL
+      PGM
+      SYUPDF FILE(nome_file) TIPO(*MAP)
+      DLFT FILE(nome_file)
+      MONMSG MSGID(CPF0000)
+      SYCRTLF FILE(nome_file)
+FINE: RCLSRC
+      ENDPGM
+```
+DLFT FILE(File_1) cancella vista logica
+Il sistema aggiorna l'archivio e se non esiste lo crea
+
+se aggiorniamo, meglio cancellare e ricreare 
+
+Non deve essere in linea l'OCSDB401.
+
+Il tipo *NOCHECK non controlla e sovrappone
+
+```COBOL
+INITIALIZE FSTTIBR
+[...]
+WRITE FSTTIBE-REC
+  INVALID KEY
+    CONTINUE
+END-WRITE.
+```
+
+Per sapere le viste logiche collegate: ```DSPDBR```
+
+SELECT * FROM SYRELEASE
+
+
+
+QLBLSRC/OCSSY401 dove ci sono le subroutines che si possono chiamare
+
+```RC``` per cercare esempi di uso
+
+
+ - ```Q-INTER```: 
+   - qualunque call va in QINTER
+ - ```Q-BATCH``` (lotto): atività fatta a gruppi.
+   - Un programma in batch non deve avere un video
+
+ - ```SBMJOB``` (Immissione lavoro - Submit Job)
+   - Con ```WRKACTJOB``` verifico se è in esecuzione  
+ - gestione lavori inoltrati
+ - ```WRKSBMJOB``` per vedere se è stato eseguito
+
+Uno script che ritarda il lavoro di un numero di secondi ```SYDLY60```
+
+```COBOL
+*----------------------------------------------------------------  
+WORKING-STORAGE SECTION.                                          
+01  WK-NUMREC                   PIC S9(10).                       
+     EXEC SQL                                                      
+        INCLUDE SQLCA                                              
+     END-EXEC.                                                     
+*---------------------------------------------------------------*  
+LINKAGE SECTION.                                                  
+01  LK-PARAMETRI.                                                 
+     03  LK-EMETTITORE              PIC S9(03).                    
+     03  LK-TIPO-INTERMED           PIC X(03).                     
+     03  LK-CATEGORIA               PIC X(03).                     
+     03  LK-STATUS                  PIC X(02).                     
+*---------------------------------------------------------------*  
+PROCEDURE DIVISION           USING LK-PARAMETRI.                  
+*-----------------------------------------------------------------
+*---------------------------------------------------------------*  
+PROCEDURE DIVISION           USING LK-PARAMETRI.                  
+*----------------------------------------------------------------- 
+A01-PRELIMINARI.                                                  
+     INITIALIZE                        WK-NUMREC.                  
+     MOVE 'NT'                     TO LK-STATUS.                   
+     EXEC SQL                                                      
+       SELECT COUNT (*) INTO :WK-NUMREC                            
+       FROM CRPROVISTB                                             
+       WHERE CRPTB_EMETTITORE    = : LK-EMETTITORE    AND          
+             CRPTB_INTERMEDIARIO = : LK-TIPO-INTERMED AND          
+             CRPTB_CATEGORIA     = : LK-CATEGORIA                  
+     END-EXEC.                                                     
+```
+
+```COBOL
+*---------------------------------------------------------------* 
+B01-ELABORAZIONE.                                                
+     EXEC SQL                                                     
+       DECLARE CARTE CURSOR FOR                                   
+         SELECT *                                                 
+           FROM CRCAR                                             
+           WHERE CRCAR_KEY_N                                      
+                 BETWEEN :WK-CARTA-DA-N AND :WK-CARTA-A-N AND     
+                 CRCAR_PAG_FORMA = "TS" AND                       
+                 CRCAR_ANA_AMMIN                                  
+                 BETWEEN :WK-AZIENDA-DA AND :WK-AZIENDA-A         
+     END-EXEC.                                                    
+ 
+*--- Apertura cursore.                                 
+     EXEC SQL                                          
+       OPEN CARTE                                      
+     END-EXEC.                                         
+     CALL 'OTSQPLG'              USING SQLCA.   
+ 
+B01-READ.                                           
+    EXEC SQL                                        
+      FETCH NEXT FROM CARTE INTO :CRCAR-SQLREC      
+    END-EXEC.                                       
+    CALL 'OTSQPLG'              USING SQLCA.        
+    IF SQLCODE = 100 OR                             
+       SQLCODE < 0                                  
+       GO TO B01-CLOSE                              
+    END-IF.                                         
+```
+
+<br>
+
+## Il nuovo standard
+
+
+
+```COBOL
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+      *--- Archivio tabella utenti collegamento remoti.
+db-acc COPY BAUSERCOR IN FSELECT
+db-acc      REPLACING    == :FILEALIAS: == BY == BAUSERCOR ==
+db-acc                   == :FILEDB: == BY == BAUSERCOR ==.
+       DATA DIVISION.
+       FILE SECTION.
+db-acc COPY BAUSERCOR IN FDD. DDS è per i file corti
+      *--- uso il nome dell'ALIAS
+
+IF FLAG
+[...]
+
+db-acc COPY FPROCEDURE
+```
+ - COPY manda un comando al precompilatore per creare il sorgente
+ - BAUSERCOR il nome del sorgente del file che vogliamo utilizzare
+ - FSELECT dice che è una copy di selezione indicizzato
+ - FSELSEQ sequenziale 
+ - REPLACING è per sostituire tutti i caratteri per creare nuove variabili
+ - FILEDB è il file sul disco che deve andare a leggere
+
+```COBOL
+IF FLAG-OPEN NOT = 'S'
+   PERFORM OPEN-INPUT-BAUSERCOR
+      THRU END-OPEN-INPUT-BAUSERCOR
+   INITIALIZE   SYJOBUSER-PARAMETRI
+CALL 'SYJOBUSER'  USING SYJOBUSER-JOB
+                                           SYJOBUSER-USER
+                                           SYJOBUSER-NBRJOB
+  MOVE 'S'   TO FLAG-OPEN
+END-IF.
+ 
+MOVE 'OK' TO LK-ESITO.
+MOVE SYJOBUSER-USER TO WK-UTENTE.
+```
+
+Chiusura:
+```COBOL
+PERFORM CLOSE-BNAIWINPUT
+TARU END-CLOSE-BNAIWINPUT.
+```
+
+```COBOL
+INITIALIZE BNCBTIFREC OF BNCBFTIF-REC.
+MOVE LK-ABI TO BNCBTIF-ABI.
+MOVE LK-CAB TO BNCBTIF-CAB.
+MOVE LK-CONTO-CORRENTE TO BNCBTIF-CONTO-CORRENTE.
+PERFORM READ-BNCBFTIF
+    THRU END-READ-BNCBFTIF
+  IF R-BNCBFTIF-INVALID-KEY
+      IINITIALIZE BNCBTIFREC OF BNCBFTIF-REC
+      MOVE 'NT' TO LK-STATUS
+END-IF.
+```

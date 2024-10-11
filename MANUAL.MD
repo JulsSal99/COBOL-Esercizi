@@ -15,6 +15,12 @@ si dichiarano i file utilizzati nel programma e si specificano le modalità di a
 # CONFIGURATION SECTION.
 dichiara configurazioni specifiche del sistema, come le impostazioni per l'host e le periferiche
 
+# SOURCE-COMPUTER.
+```SOURCE-COMPUTER. IBM-AS400.```
+
+# OBJECT-COMPUTER.
+```OBJECT-COMPUTER. IBM-AS400.```
+
 # SPECIAL-NAMES.
 Viene utilizzata per dare nomi simbolici a specifici valori o per estendere il set di caratteri. eg. DECIMAL-POINT IS COMMA
 Esempio:
@@ -42,19 +48,24 @@ Esempio:
 01 Num       PIC 9(2) VALUE 1.
 ```
 Legenda del primo numero:
-- 01-49: per descrivere variabili e strutture di dati.
-- 66: per definire "renames" (alias) per altre variabili.
-- 77: per definire variabili indipendenti, non strutturate.
-- 88: per definire condizioni o valori booleani.
+- ```01```-```49```: per descrivere variabili e strutture di dati.
+- ```66```: per definire "renames" (alias) per altre variabili.
+- ```77```: per definire variabili indipendenti, non strutturate.
+- ```88```: per definire condizioni o valori booleani.
 
 Il numero viene formattato con PIC. Legenda dei simboli in PIC:
-- 9: Numerico
-- X: AlfaNumerico
-- Z: diventa uno spazio se 0
-- V: virgola
-- S: signed
-- $: mostra il simbolo del dollaro, ma vicino alla cifra più a sinistra. 
+- ```9```: Numerico
+- ```X```: AlfaNumerico
+- ```Z```: diventa uno spazio se 0
+- ```V```: virgola
+- ```S```: signed
+- ```$```: mostra il simbolo del dollaro, ma vicino alla cifra più a sinistra. 
       Se non c'è abbastanza spazio, scarta la cifra più a destra. Vedi ["CASTING"](./11.cob)
+
+COMP indica un carattere compatto:
+```COBOL
+01 Num       PIC S9(13) COMP-3.
+```
 
 Nota1: Scrivere "9(2)" è uguale a scrivere "99".
 Nota2. "Value" da un valore di default.
@@ -161,6 +172,7 @@ Indica il codice eseguibile del programma
 <Br><Br>
 
 ## Sottofunzioni
+Per convenzione: ```A01-INIZIO.``` per indicare che comincia la scrittura del programma.
 ### Paragrafi (File [10.cob](./10.cob))
 I paragrafi (o sottofunzioni) vengono definiti e chiamati così:
 ```COBOL
@@ -397,6 +409,8 @@ Il comando OPEN permette di aprire un file in diverse modalità:
    - ```READ File INVALID KEY DISPLAY "ERROR" END-READ.```
  - ```CLOSE File.``` - procede alla chiusura del file e a terminare il comando OPEN. 
 
+![1](img/1.png)
+
 *Esempio di lettura dati con OPEN INPUT*:
 ```COBOL
 OPEN INPUT File.
@@ -581,3 +595,4 @@ Esempio di codice che dichiara un cursore che seleziona gli studenti con STUDENT
           DISPLAY WS-STUDENT-REC
       END-PERFORM
 ```
+
