@@ -1116,3 +1116,8 @@ PERFORM READ-BNCBFTIF
       MOVE 'NT' TO LK-STATUS
 END-IF.
 ```
+
+### I cicli descending
+```START WITH NO LOCK```/```READ NEXT WITH NO LOCK``` - perché di solito blocca quel record.
+
+Se ho la chiave descending devo invertire START con END
