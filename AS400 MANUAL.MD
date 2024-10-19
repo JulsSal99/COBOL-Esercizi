@@ -292,9 +292,7 @@ Per riferirsi a un dizionario:
  - ```REFFLD``` (Ref-field) indica un campo nel dizionario. 
  - ```REF(DIZIONARIO)``` - sotto unique
 
-```crtpf``` membro su ```*none```
-
-```edtlibl``` bisogna mettere in testa la libreria (GIULIOS)
+Per compilare il dizionario: ```crtpf``` membro su ```*none```
 
 Membro se desiderato su ```*FILE``` in tutti gli altri casi
 
@@ -522,9 +520,17 @@ I test vanno fatti in ```WORKOCS``` o ```DEMOOCS```
 ```CC``` COMPILA
 ```CR``` TESTA 
 
-```WRKOCS```
+### Maschere video
+Le maschere sono in ```QDDSSRC``` di tipo dspf di tipo *FILE.
 
-```QDDSSRC``` di tipo dspf di tipo *FILE
+Per compilare: ```CRTDSPF``` crea le maschere, ma non si usa. Si usa ```CC```.
+
+Per modificare i file video:
+ - ```CHGDSPF``` + F4
+ - ```2```: modifica
+ - ```17``` -> ```12```: modifica a video
+
+```WRKOCS```
 
 ASSUME (di tipo RECORD) permette 
 - opzione 8 
@@ -571,22 +577,16 @@ gestione controparti:
  - l'indicatore ha valore numerico a due cifre (```01```-```99```)
    - ```+``` invio
    - stessa riga: ```AND```
-   - opposta: ```OR``` 
+   - opposta: ```OR```
+   - quando c'è un errore si disattiva il sottolineato 
+<br>
 
-```F6``` + ```Y``` per testare
+ - ```F6``` + ```Y``` per selezionare i campi da accendere
+ - F4 per riordinare i campi
+   - F6 per riordinare i campi
+ - F20 (SHIFT+F8) accende le etichette
 
-F4 F6 per riordinare i campi
-
-F20 (SHIFT+F8) accende le etichette
-
-
-Quando c'è un errore si disattiva il sottolineato
-
-Per compilare: ```CRTDSPF``` crea le maschere, ma non si usa. Si usa ```CC```
-
-```CHGDSPF``` + F4 -> modifica file video
-
-```CALL``` è per testare
+```CALL``` è per eseguire un programma
 
 ```COBOL
   SELECT VIDEO    ASSIGN
@@ -623,6 +623,7 @@ sui campi variabili i valori dall'1 al 60
 'I' Immissione
 'SPACE' inserimento
 
+Routine per controllare un parametro:
 ```COBOL
 CALL 'SYCNFC' using 
     BY CONTENT '0024'
@@ -631,9 +632,9 @@ CALL 'SYCNFC' using
 MOVE LKMSG-MSG                TO FMST-ERRORE
 ```
 
-```CALL SYFILSTA```
+Tabella file status: ```CALL SYFILSTA```
 
-```rcmsg``` -> per vedere i messaggi di errore (eg. ```0548```: nome e cognome obbligatorio)
+```rcmsg``` -> per vedere i codici dei messaggi di errore (eg. ```0548```: nome e cognome obbligatorio)
 
 ```8``` e ```5``` dettagli sul compilato
 
@@ -663,16 +664,20 @@ SW-TESTATA      PIC(9)
 
 ```RC``` per capire da cosa è chiamato (```COPY```) un programma
 
- - ```DG``` per debuggare
+ - Nel proprio profilo:
+   - ```DG``` per debuggare
+   - F6 do il punto iniziale
+   - F12 do l'ultimo punto
+   - con F10 vado avanti nell'esecuzione
+   - F11 EVAL variabile = 'valore'
+
+ - In WORKOCS:
    - F1
      - prendo i miei campi che interessano
-     - F A01 mi posiziono all'inizio del programma
-     - F10 edtlibl
-     - F6 do il punto iniziale
-     - F12 do l'ultimo punto
-     - con F10 vado avanti
-     - EVAL variabile = 'valore'
-     - F11
+   - F10
+   - ```edtlibl``` per aggiungere la propria libreria
+   - CALL nome_programma
+
    - ```enddbg``` per terminare il debug
      - ```ENDSRVJOB```
  - SHIFT+```F2``` per agganciare il file che voglio debuggare nel mio file. 
