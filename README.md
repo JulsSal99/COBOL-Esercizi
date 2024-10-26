@@ -51,3 +51,4 @@ Testato con:
 - tutorial COBOL : Adriano Grimaldi
 - https://www.tutorialspoint.com/cobol/index.htm
 - Documentazione sull'AS400: https://www.neroni.it/scaricabili/Corso-As400-2023-Manuale.pdf
+- RPG Manual : https://www.nicklitten.com/course/rpg-variables-and-procedures/
