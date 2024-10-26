@@ -16,7 +16,7 @@ Nella repository troverai:
   - [manuale in PDF](./MANUAL.pdf)
 - [manuale sull'AS400](./AS400%20MANUAL.MD)
   - [manuale in PDF](./AS400%20MANUAL.pdf)
-- [manuale su RPG Free](RPG20Free%20Manual.md)
+- [manuale su RPG Free](RPG%20Free%20Manual.md)
 
 ## Come Eseguire i Programmi
 
