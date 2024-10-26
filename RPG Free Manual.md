@@ -10,7 +10,8 @@ dsply 'Hello World';
 return;
 ```
 Per compilare: 
- - ```CRTBNDRPG```
+ - ```CRTBNDRPG``` + F4
  - dal SEU: F3 e poi F14
 
-```WRKOBJPDM yourlibrary```
+per vedere il risultato: ```WRKOBJPDM yourlibrary```
+
