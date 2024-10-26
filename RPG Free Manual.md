@@ -1,3 +1,4 @@
+# RPGLE
 RPGLE (RPG IV), al contrario del COBOL, ha una larghezza massima di 80 caratteri, ma, con lo standard libero, questo limite non esiste più.
 
 Fasi prelminari: 
@@ -22,7 +23,28 @@ Per cancellare la vecchia versione del programma: ```DLTPGM```
 Per forzare la terminazione di un programma ci sono due metodi:
  - ```return;```
  - ```*inlr = '1';```: setta l'ultimo record a 1.
+## i tipi di variabili
+In RPGLE (RPG IV), ci sono diversi tipi di dati che puoi utilizzare. Ecco i principali:
+ - ```int```: intero con segno.
+ - ```uns```: intero senza segno.
+ - ```dec(p,s)```: numero decimale con precisione p (numero totale di cifre) e scala s (cifre a destra della virgola).
+ - ```float```: numero in virgola mobile.
+ - ```char(n)```: stringa di caratteri di lunghezza n.
+ - ```varchar(n)```: stringa di caratteri di lunghezza variabile fino a n.
+ - ```bin(n)```: numero binario.
+ - ```pointer```: utilizzato per riferimenti a indirizzi di memoria.
 
+Date e tempo:
+ - ```date```: data.
+ - ```time```: ora.
+ - ```timestamp```: data e ora.
+
+Other Types:
+ - ```graphic(n)```: caratteri grafici.
+ - ```vargraphic(n)```: caratteri grafici a lunghezza variabile.
+ - ```DSS```: tipo per la gestione delle strutture dati.
+
+## Le variabili
 Dichiarare le variabili:
 ```RPGLE
        dcl-s name char(10) inz('Jim');
@@ -57,7 +79,7 @@ return;
 ```
 ```hello```, con lunghezza 5, sarà stampato con 5 spazi alla fine perché asegnato a una variabile da 10 caratteri. 
 
-Per dichiarare e valorizzare una **struttura dati**:
+Per dichiarare e valorizzare una **struttura dati** (Data Struct):
 ```RPGLE
 dcl-ds info qualified;
     name char(10) inz('Sam');
@@ -77,4 +99,51 @@ return;
  - ```packed(9 : 2)```: I numeri sono memorizzati in un formato che occupa meno spazio rispetto a un numero in virgola mobile o a un numero intero standard; Significa che puoi memorizzare numeri fino a 999999.99 (9 cifre totali, con 2 decimali), e il numero verrà memorizzato in 5 byte.
  - ```dcl-ds otherInfo likeds(info) inz(*likeds);```: viene dichiarata un'altra struttura, che è "like" (simile) alla struttura info. L'opzione inz(*likeds) inizializza i campi con i valori predefiniti della struttura info, ma non copia i valori dei campi.
 
+## Gli array
+RPG supporta solo una dimensione per gli array. Gli array multidimensionali possono essere simulati utilizzando array di strutture dati con sottocampi di array; invece di codificare cell(ijk) dovresti codificare table(i).row(j).col(k).
 
+```RPGLE
+       dcl-s dates date(*iso) dim(3); 
+       dates(1) = %date(); // la data corrente 
+       dates(2) = %date() + %days(1); // domani 
+       dates(3) = %date() + %years(1); // l'anno prossimo 
+       dsply (%char(dates(1)) + ' ' 
+            + %char(dates(2)) + ' ' 
+            + %char(dates(3))); 
+       return;
+```
+
+Le date hanno formato ISO (aaaa-mm-gg).
+```%date``` restituisce la data corrente quando non viene specificato alcun parametro. ```%date``` può anche convertire un parametro numerico o di tipo carattere in una "data vera".
+
+```RPGLE
+       dcl-ds families qualified dim(5);
+           address varchar(50);
+           numPeople uns(3); 
+           dcl-ds people dim(8); 
+              name varchar(25); 
+              age packed(5); 
+           end-ds; 
+       end-ds;
+
+       dcl-s numFamilies uns(5) inz(0);
+       dcl-s i int(10);
+       dcl-s j int(10); 
+
+       families(1).address = '10 Mockingbird Lane';
+        families(1).people(1).name = 'Alice'; 
+       families(1).people(1).age = 3;
+        families(1).people(2).name = 'Bill'; 
+       families(1).people(2).age = 15; 
+       families(1).numPeople = 2; 
+       numFamilies = 1; 
+       for i = 1 to numFamilies;
+           dsply (families(i).address); 
+          for j = 1 to families(i).numPeople; 
+          dsply (families(i).people(j).name  + ' is '
+               + %char(families(i).people(j).age)
+                + ' years old.'); 
+          endfor; 
+       endfor;  
+      return;
+```
