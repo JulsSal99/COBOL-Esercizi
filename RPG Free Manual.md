@@ -99,9 +99,7 @@ return;
  - ```packed(9 : 2)```: I numeri sono memorizzati in un formato che occupa meno spazio rispetto a un numero in virgola mobile o a un numero intero standard; Significa che puoi memorizzare numeri fino a 999999.99 (9 cifre totali, con 2 decimali), e il numero verrà memorizzato in 5 byte.
  - ```dcl-ds otherInfo likeds(info) inz(*likeds);```: viene dichiarata un'altra struttura, che è "like" (simile) alla struttura info. L'opzione inz(*likeds) inizializza i campi con i valori predefiniti della struttura info, ma non copia i valori dei campi.
 
-## Gli array
-RPG supporta solo una dimensione per gli array. Gli array multidimensionali possono essere simulati utilizzando array di strutture dati con sottocampi di array; invece di codificare cell(ijk) dovresti codificare table(i).row(j).col(k).
-
+## Le date
 ```RPGLE
        dcl-s dates date(*iso) dim(3); 
        dates(1) = %date(); // la data corrente 
@@ -116,6 +114,9 @@ RPG supporta solo una dimensione per gli array. Gli array multidimensionali poss
 Le date hanno formato ISO (aaaa-mm-gg).
 ```%date``` restituisce la data corrente quando non viene specificato alcun parametro. ```%date``` può anche convertire un parametro numerico o di tipo carattere in una "data vera".
 
+## Gli array
+RPG supporta solo una dimensione per gli array. Gli array multidimensionali possono essere simulati utilizzando array di strutture dati con sottocampi di array; invece di codificare cell(ijk) dovresti codificare table(i).row(j).col(k).
+
 ```RPGLE
        dcl-ds families qualified dim(5);
            address varchar(50);
@@ -126,24 +127,40 @@ Le date hanno formato ISO (aaaa-mm-gg).
            end-ds; 
        end-ds;
 
-       dcl-s numFamilies uns(5) inz(0);
+       families(1).address = '10 Mockingbird Lane';
+       families(1).people(1).name = 'Alice'; 
+       families(1).people(1).age = 3;
+       families(1).people(2).name = 'Bill'; 
+       families(1).people(2).age = 15;
+
+       families(1).numPeople = 2;
+       dcl-s numFamilies uns(5) inz(1);
        dcl-s i int(10);
        dcl-s j int(10); 
-
-       families(1).address = '10 Mockingbird Lane';
-        families(1).people(1).name = 'Alice'; 
-       families(1).people(1).age = 3;
-        families(1).people(2).name = 'Bill'; 
-       families(1).people(2).age = 15; 
-       families(1).numPeople = 2; 
-       numFamilies = 1; 
        for i = 1 to numFamilies;
-           dsply (families(i).address); 
+          dsply (families(i).address); 
           for j = 1 to families(i).numPeople; 
-          dsply (families(i).people(j).name  + ' is '
-               + %char(families(i).people(j).age)
-                + ' years old.'); 
+             dsply (families(i).people(j).name  + ' is '
+                 + %char(families(i).people(j).age)
+                 + ' years old.'); 
           endfor; 
        endfor;  
       return;
 ```
+```
+       dcl-pr qcmdexc extpgm('QCMDEXC');
+          theCmd char(3000) const;
+          cmdLen packed(15 : 5) const;
+          dbcs char(3) const options(*nopass);
+       end-pr;
+
+      dcl-s cmd varchar(100);
+
+      cmd = 'DSPJOB OUTPUT(*PRINT)';
+      qcmdexc (cmd : %len(cmd));
+      qcmdexc ('WRKSPLF' : 7);
+      return;
+```
+
+```qcmdexc``` è il programma di sistema per eseguire comandi. ```extpgm(prg)``` indica che è un programma esterno.
+```DBCS``` (Double Byte Character Set) non viene utilizzato, quindi è definito con l'opzione *nopass, che indica che non viene passato alcun valore.
