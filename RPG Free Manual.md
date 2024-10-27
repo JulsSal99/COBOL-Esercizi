@@ -147,20 +147,51 @@ RPG supporta solo una dimensione per gli array. Gli array multidimensionali poss
        endfor;  
       return;
 ```
-```
-       dcl-pr qcmdexc extpgm('QCMDEXC');
-          theCmd char(3000) const;
-          cmdLen packed(15 : 5) const;
-          dbcs char(3) const options(*nopass);
-       end-pr;
 
-      dcl-s cmd varchar(100);
-
-      cmd = 'DSPJOB OUTPUT(*PRINT)';
-      qcmdexc (cmd : %len(cmd));
-      qcmdexc ('WRKSPLF' : 7);
-      return;
-```
-
+## I comandi
 ```qcmdexc``` è il programma di sistema per eseguire comandi. ```extpgm(prg)``` indica che è un programma esterno.
 ```DBCS``` (Double Byte Character Set) non viene utilizzato, quindi è definito con l'opzione *nopass, che indica che non viene passato alcun valore.
+La chiamata al programma viene fatta così:
+```RPGLE
+dcl-pr qcmdexc extpgm;
+theCmd char(3000) const;
+cmdLen packed(15 : 5) const;
+dbcs char(3) const options(*nopass);
+end-pr;
+```
+E' possibile anche specificare il nome del programma effettivo da eseguire:
+```RPGLE
+       // dichiarazione di un'interfaccia per una routine di programma in RPG (Report Program Generator)
+      dcl-pr qcmdexc extpgm('QCMDEXC'); 
+          theCmd char(3000) const; 
+          cmdLen packed(15 : 5) const;  
+          dbcs char(3) const options(*nopass); 
+      end-pr;  
+      dcl-s cmd varchar(100); 
+
+      cmd = 'DSPJOB OUTPUT(*PRINT)';  
+      qcmdexc (cmd : %len(cmd));  // %len(cmd) specifica la lunghezza del messaggio
+      qcmdexc ('WRKSPLF' : 7); // crea una stampa
+      return;
+```
+```RPGLE
+/if defined(*CRTBNDRPG)
+ctl-opt dftactgrp(*no) actgrp(*new);
+/endif
+
+ctl-opt option(*srcstmt);  // permette di visualizzare le righe di origine nel debug.
+dcl-s num int(10) inz(25);  
+print ('This message is much longer than the 52 ' + 'characters that DSPLY allows. ' + 'The value of variable "num" is ' + %char(num));
+return;
+dcl-proc print;
+  dcl-pi  *n;
+    msg varchar(5000) const;
+  end-pi;
+  dcl-pr printf extproc(*dclcase);
+    template pointer value options(*string);
+    dummy int(10) value options(*nopass);
+  end-pr;
+  dcl-c NEWLINE x'15'; 
+  printf(msg + NEWLINE);
+end-proc print;
+```
