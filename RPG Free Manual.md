@@ -148,15 +148,19 @@ RPG supporta solo una dimensione per gli array. Gli array multidimensionali poss
       return;
 ```
 
-## I comandi
+## I comandi e le procedure
+ - dcl-proc: Inizia la definizione di una procedura.
+ - dcl-pi: Definisce l'interfaccia di una procedura.
+ - dcl-pr: Dichiara una procedura esterna.
+
 ```qcmdexc``` è il programma di sistema per eseguire comandi. ```extpgm(prg)``` indica che è un programma esterno.
 ```DBCS``` (Double Byte Character Set) non viene utilizzato, quindi è definito con l'opzione *nopass, che indica che non viene passato alcun valore.
 La chiamata al programma viene fatta così:
 ```RPGLE
 dcl-pr qcmdexc extpgm;
-theCmd char(3000) const;
-cmdLen packed(15 : 5) const;
-dbcs char(3) const options(*nopass);
+   theCmd char(3000) const;
+   cmdLen packed(15 : 5) const;
+   dbcs char(3) const options(*nopass);
 end-pr;
 ```
 E' possibile anche specificare il nome del programma effettivo da eseguire:
@@ -179,19 +183,25 @@ E' possibile anche specificare il nome del programma effettivo da eseguire:
 ctl-opt dftactgrp(*no) actgrp(*new);
 /endif
 
-ctl-opt option(*srcstmt);  // permette di visualizzare le righe di origine nel debug.
-dcl-s num int(10) inz(25);  
+ctl-opt option(*srcstmt);  // visualizzare le istruzioni sorgente durante il debug
+dcl-s num int(10) inz(25);   
 print ('This message is much longer than the 52 ' + 'characters that DSPLY allows. ' + 'The value of variable "num" is ' + %char(num));
 return;
+
 dcl-proc print;
-  dcl-pi  *n;
+  // dichiara una PROGRAM INTERFACE che non restituisce valori (*n) e prende un messaggio (msg) come input.
+  dcl-pi  *n; 
     msg varchar(5000) const;
   end-pi;
-  dcl-pr printf extproc(*dclcase);
-    template pointer value options(*string);
-    dummy int(10) value options(*nopass);
+
+  dcl-pr printf extproc(*dclcase);  // procedura esterna
+    template pointer value options(*string);  // puntatore a una stringa.
+    dummy int(10) value options(*nopass);   // non viene passato
   end-pr;
+
   dcl-c NEWLINE x'15'; 
   printf(msg + NEWLINE);
 end-proc print;
 ```
+
+```ctl-opt dftactgrp(*no) actgrp(*new);``` : le opzioni di controllo specificano che il programma non deve utilizzare il gruppo di attivazione predefinito (dftactgrp(*no)) e che deve utilizzare un nuovo gruppo di attivazione (actgrp(*new)).
