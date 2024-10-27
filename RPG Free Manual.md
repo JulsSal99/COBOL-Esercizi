@@ -149,9 +149,9 @@ RPG supporta solo una dimensione per gli array. Gli array multidimensionali poss
 ```
 
 ## I comandi e le procedure
- - dcl-proc: Inizia la definizione di una procedura.
- - dcl-pi: Definisce l'interfaccia di una procedura.
- - dcl-pr: Dichiara una procedura esterna.
+ - ```dcl-proc```: Inizia la definizione di una procedura.
+ - ```dcl-pi```: Definisce l'interfaccia di una procedura.
+ - ```dcl-pr```: Dichiara una procedura esterna.
 
 ```qcmdexc``` è il programma di sistema per eseguire comandi. ```extpgm(prg)``` indica che è un programma esterno.
 ```DBCS``` (Double Byte Character Set) non viene utilizzato, quindi è definito con l'opzione *nopass, che indica che non viene passato alcun valore.
@@ -205,3 +205,20 @@ E' possibile anche specificare il nome del programma effettivo da eseguire:
 ```
 
 ```ctl-opt dftactgrp(*no) actgrp(*new);``` : le opzioni di controllo specificano che il programma non deve utilizzare il gruppo di attivazione predefinito (dftactgrp(*no)) e che deve utilizzare un nuovo gruppo di attivazione (actgrp(*new)).
+
+## Files
+```dcl-f``` dichiara un file di lavoro.
+```RPGLE
+        dcl-f rpgtestf usropn extdesc('MYLIB/RPGTESTF') extfile(*extdesc);
+        // usropn: aperto in modo esplicito 
+
+        open rpgtestf;
+        read rpgtestf;
+        dow not %eof;
+           dsply ODOBNM;
+           read rpgtestf;
+        enddo;
+        close rpgtestf;
+        return;
+```
+
