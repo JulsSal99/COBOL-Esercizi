@@ -147,6 +147,10 @@ RPG supporta solo una dimensione per gli array. Gli array multidimensionali poss
        endfor;  
       return;
 ```
+## I cicli
+        dow not %eof;
+           dsply 'do while';
+        enddo;
 
 ## I comandi e le procedure
  - ```dcl-proc```: Inizia la definizione di una procedura.
@@ -210,11 +214,12 @@ E' possibile anche specificare il nome del programma effettivo da eseguire:
 ```dcl-f``` dichiara un file di lavoro.
 ```RPGLE
         dcl-f rpgtestf usropn extdesc('MYLIB/RPGTESTF') extfile(*extdesc);
-        // usropn: aperto in modo esplicito 
+        // usropn: aperto in modo esplicito in modalita open
+        // extfile(*extdesc): Indica che il file è definito esternamente
 
         open rpgtestf;
         read rpgtestf;
-        dow not %eof;
+        dow not %eof;    // do while
            dsply ODOBNM;
            read rpgtestf;
         enddo;
